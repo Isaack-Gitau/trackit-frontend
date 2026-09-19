@@ -149,7 +149,7 @@ export function TermsPage() {
               {termsSections.map((section) => (
                 <article
                   key={section.number}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <div className="flex gap-5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
@@ -209,7 +209,7 @@ export function TermsPage() {
               {responsibilities.map((responsibility) => (
                 <article
                   key={responsibility.title}
-                  className="rounded-2xl border border-[var(--trackit-border)] bg-white p-6"
+                  className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6"
                 >
                   <h3 className="text-lg font-extrabold text-[var(--trackit-navy)]">
                     {responsibility.title}

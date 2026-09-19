@@ -99,17 +99,17 @@ export function PublicProfilePage() {
       <main className="min-h-[70vh] bg-[var(--trackit-surface)] px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto w-full max-w-5xl">
           <div className="animate-pulse">
-            <div className="h-5 w-24 rounded bg-slate-200" />
+            <div className="h-5 w-24 rounded bg-[var(--trackit-surface-blue)]" />
 
-            <div className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-10">
+            <div className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-10">
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                <div className="h-24 w-24 shrink-0 rounded-full bg-slate-200" />
+                <div className="h-24 w-24 shrink-0 rounded-full bg-[var(--trackit-surface-blue)]" />
 
                 <div className="w-full">
-                  <div className="h-8 w-48 rounded bg-slate-200" />
-                  <div className="mt-3 h-5 w-32 rounded bg-slate-200" />
-                  <div className="mt-5 h-4 w-full max-w-xl rounded bg-slate-200" />
-                  <div className="mt-2 h-4 w-3/4 max-w-lg rounded bg-slate-200" />
+                  <div className="h-8 w-48 rounded bg-[var(--trackit-surface-blue)]" />
+                  <div className="mt-3 h-5 w-32 rounded bg-[var(--trackit-surface-blue)]" />
+                  <div className="mt-5 h-4 w-full max-w-xl rounded bg-[var(--trackit-surface-blue)]" />
+                  <div className="mt-2 h-4 w-3/4 max-w-lg rounded bg-[var(--trackit-surface-blue)]" />
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ export function PublicProfilePage() {
 
           <section
             role="alert"
-            className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-white p-8 text-center shadow-sm sm:p-12"
+            className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-8 text-center shadow-sm sm:p-12"
           >
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--trackit-blue-soft)] text-2xl font-bold text-[var(--trackit-blue)]">
               ?
@@ -197,7 +197,7 @@ export function PublicProfilePage() {
           ← Go back
         </button>
 
-        <section className="mt-6 overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm">
+        <section className="mt-6 overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm">
           <div className="bg-[var(--trackit-deep-navy)] px-6 py-8 sm:px-10 sm:py-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white/20 bg-[var(--trackit-blue-soft)] text-3xl font-bold text-[var(--trackit-blue)] shadow-lg">
@@ -215,7 +215,7 @@ export function PublicProfilePage() {
               </div>
 
               <div className="min-w-0">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--trackit-bright-blue)]">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
                   TrackIt member
                 </p>
 

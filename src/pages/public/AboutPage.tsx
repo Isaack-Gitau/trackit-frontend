@@ -114,7 +114,7 @@ export function AboutPage() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] bg-[var(--trackit-navy)] p-6 shadow-xl sm:p-8">
+            <div className="rounded-[2rem] bg-[var(--trackit-dark-card)] p-6 shadow-xl sm:p-8">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
                 The TrackIt approach
               </p>
@@ -171,7 +171,7 @@ export function AboutPage() {
               {problems.map((problem) => (
                 <article
                   key={problem.title}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <div className="h-1.5 w-12 rounded-full bg-[var(--trackit-blue)]" />
 
@@ -209,9 +209,9 @@ export function AboutPage() {
               {principles.map((principle) => (
                 <article
                   key={principle.number}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--trackit-dark-card)] text-sm font-extrabold text-[var(--trackit-dark-card-text)]">
                     {principle.number}
                   </div>
 
@@ -259,16 +259,16 @@ export function AboutPage() {
         </section>
 
         <section className="px-5 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
-          <div className="mx-auto w-full max-w-4xl rounded-[2rem] bg-[var(--trackit-navy)] px-6 py-12 text-center sm:px-10 sm:py-16">
+          <div className="mx-auto w-full max-w-4xl rounded-[2rem] bg-[var(--trackit-dark-card)] px-6 py-12 text-center sm:px-10 sm:py-16">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
               Start with TrackIt
             </p>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight !text-white sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight !text-[var(--trackit-dark-card-text)] sm:text-4xl">
               Give your lost or found item a structured place to start.
             </h2>
 
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 !text-[var(--trackit-text-on-dark)]">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 !text-[var(--trackit-dark-card-muted)]">
               Create an account and use TrackIt to report, discover, verify,
               and manage your lost-and-found activity.
             </p>
@@ -276,14 +276,14 @@ export function AboutPage() {
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/register"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Start with TrackIt
               </Link>
 
               <Link
                 to="/how-it-works"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold !text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold !text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 See how it works
               </Link>

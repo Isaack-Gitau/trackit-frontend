@@ -94,9 +94,9 @@ export function HowItWorksPage() {
 
               <p className="mt-4 text-base leading-8 text-[var(--trackit-text-muted)]">
                 Each stage has a different purpose. Reporting creates useful
-                information, discovery helps identify possibilities, verification
-                helps establish ownership, and the return stage focuses on
-                getting the item back responsibly.
+                information, discovery helps identify possibilities,
+                verification helps establish ownership, and the return stage
+                focuses on getting the item back responsibly.
               </p>
             </div>
 
@@ -104,10 +104,10 @@ export function HowItWorksPage() {
               {steps.map((step) => (
                 <article
                   key={step.number}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-dark-card)] text-sm font-extrabold text-[var(--trackit-dark-card-text)]">
                       {step.number}
                     </div>
 
@@ -154,8 +154,8 @@ export function HowItWorksPage() {
               </h2>
             </div>
 
-            <div className="rounded-3xl bg-[var(--trackit-navy)] p-6 text-white shadow-xl sm:p-8">
-              <p className="text-base leading-8 text-[var(--trackit-text-on-dark)]">
+            <div className="rounded-3xl bg-[var(--trackit-dark-card)] p-6 text-[var(--trackit-dark-card-text)] shadow-xl sm:p-8">
+              <p className="text-base leading-8 text-[var(--trackit-dark-card-muted)]">
                 A description, photograph, or apparent similarity should not
                 automatically establish ownership. TrackIt&apos;s claim and
                 review processes are designed to create a clearer path between
@@ -165,7 +165,7 @@ export function HowItWorksPage() {
 
               <Link
                 to="/safety"
-                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Read our safety guidance
               </Link>
@@ -185,7 +185,8 @@ export function HowItWorksPage() {
 
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[var(--trackit-text-on-dark)]">
               Create your TrackIt account to access the platform and begin
-              reporting, discovering, and managing your lost-and-found activity.
+              reporting, discovering, and managing your lost-and-found
+              activity.
             </p>
 
             <Link

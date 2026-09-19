@@ -92,7 +92,7 @@ export function DiscoverPage() {
         <div className="mx-auto w-full max-w-7xl">
           <section
             aria-labelledby="discovery-filters-heading"
-            className="rounded-3xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm sm:p-7"
+            className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm sm:p-7"
           >
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
@@ -154,7 +154,7 @@ export function DiscoverPage() {
                   onChange={(event) =>
                     handleTypeChange(event.target.value as ItemType | "")
                   }
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
                 >
                   <option value="">All reports</option>
                   <option value="lost">Lost items</option>
@@ -178,7 +178,7 @@ export function DiscoverPage() {
                     handleCategoryChange(event.target.value)
                   }
                   placeholder="e.g. Electronics"
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export function DiscoverPage() {
                     handleLocationChange(event.target.value)
                   }
                   placeholder="e.g. University Library"
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
                 />
               </div>
             </div>
@@ -264,7 +264,7 @@ export function DiscoverPage() {
                 </button>
               </div>
             ) : items.length === 0 ? (
-              <div className="mt-7 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-white px-6 py-12 text-center">
+              <div className="mt-7 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-6 py-12 text-center">
                 <h3 className="text-lg font-bold text-[var(--trackit-navy)]">
                   No matching reports found
                 </h3>
@@ -288,7 +288,7 @@ export function DiscoverPage() {
                     <Link
                       key={item.id}
                       to={`/items/${item.id}`}
-                      className="group overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+                      className="group overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
                     >
                       {item.image ? (
                         <img
@@ -355,7 +355,7 @@ export function DiscoverPage() {
                     type="button"
                     disabled={!hasPreviousPage}
                     onClick={() => setPage((current) => current - 1)}
-                    className="min-h-11 rounded-lg border border-[var(--trackit-border)] bg-white px-5 text-sm font-bold text-[var(--trackit-navy)] disabled:opacity-40"
+                    className="min-h-11 rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] disabled:opacity-40"
                   >
                     Previous
                   </button>
@@ -384,7 +384,7 @@ export function DiscoverPage() {
 
 function DiscoveryResultSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white">
+    <div className="animate-pulse overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)]">
       <div className="h-48 bg-[var(--trackit-blue-soft)]" />
 
       <div className="space-y-4 p-5">

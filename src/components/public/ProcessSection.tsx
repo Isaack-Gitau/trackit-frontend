@@ -57,7 +57,7 @@ export function ProcessSection() {
 
             <Link
               to="/how-it-works"
-              className="mt-7 inline-flex min-h-11 items-center rounded-lg border border-[var(--trackit-border)] bg-white px-5 text-sm font-extrabold text-[var(--trackit-text)] shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+              className="mt-7 inline-flex min-h-11 items-center rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-extrabold text-[var(--trackit-text)] shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
             >
               See how TrackIt works
             </Link>
@@ -67,7 +67,7 @@ export function ProcessSection() {
             {steps.map((step) => (
               <article
                 key={step.number}
-                className="group rounded-2xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md sm:p-6"
+                className="group rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md sm:p-6"
               >
                 <div className="flex items-start justify-between gap-4">
                   <span className="inline-flex h-10 min-w-10 items-center justify-center rounded-xl bg-[var(--trackit-blue-soft)] px-2 text-xs font-black tracking-[0.08em] text-[var(--trackit-blue)]">

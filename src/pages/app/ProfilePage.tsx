@@ -186,17 +186,17 @@ function getClaimStatusClasses(
 ): string {
   switch (status) {
     case "approved":
-      return "bg-emerald-100 text-emerald-800";
+      return "bg-[var(--trackit-success-soft)] text-[var(--trackit-success)]";
 
     case "rejected":
-      return "bg-red-100 text-red-800";
+      return "bg-[var(--trackit-danger-soft)] text-[var(--trackit-danger)]";
 
     case "withdrawn":
-      return "bg-slate-100 text-slate-700";
+      return "bg-[var(--trackit-surface-blue)] text-[var(--trackit-text-muted)]";
 
     case "pending":
     default:
-      return "bg-amber-100 text-amber-800";
+      return "bg-[var(--trackit-warning-soft)] text-[var(--trackit-warning)]";
   }
 }
 
@@ -366,7 +366,7 @@ function Toggle({
   return (
     <label
       htmlFor={id}
-      className="flex cursor-pointer items-start justify-between gap-5 rounded-xl border border-[var(--trackit-border)] bg-white p-4 transition-colors hover:border-[var(--trackit-blue)]"
+      className="flex cursor-pointer items-start justify-between gap-5 rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-4 transition-colors hover:border-[var(--trackit-blue)]"
     >
       <span>
         <span className="block text-sm font-semibold text-[var(--trackit-navy)]">
@@ -391,7 +391,7 @@ function Toggle({
 
         <span
           aria-hidden="true"
-          className="block h-6 w-11 rounded-full bg-slate-300 transition-colors peer-checked:bg-[var(--trackit-blue)]"
+          className="block h-6 w-11 rounded-full bg-[var(--trackit-border)] transition-colors peer-checked:bg-[var(--trackit-blue)]"
         />
 
         <span
@@ -413,7 +413,7 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm">
       <p className="text-sm font-semibold text-[var(--trackit-text-muted)]">
         {label}
       </p>
@@ -548,7 +548,7 @@ function ItemCard({
   return (
     <Link
       to={`/items/${item.id}`}
-      className="group overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+      className="group overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
     >
       {imageUrl ? (
         <img
@@ -634,7 +634,7 @@ function ClaimActivityCard({
   return (
     <Link
       to={`/items/${claim.item_id}`}
-      className="group rounded-2xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+      className="group rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -1110,7 +1110,7 @@ export function ProfilePage() {
       
       <main className="min-h-screen bg-[var(--trackit-surface)] px-5 py-10 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto w-full max-w-7xl animate-pulse">
-          <div className="h-72 rounded-3xl bg-slate-200" />
+          <div className="h-72 rounded-3xl bg-[var(--trackit-surface-blue)]" />
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {Array.from({
@@ -1118,12 +1118,12 @@ export function ProfilePage() {
             }).map((_, index) => (
               <div
                 key={index}
-                className="h-32 rounded-2xl bg-slate-200"
+                className="h-32 rounded-2xl bg-[var(--trackit-surface-blue)]"
               />
             ))}
           </div>
 
-          <div className="mt-8 h-96 rounded-3xl bg-slate-200" />
+          <div className="mt-8 h-96 rounded-3xl bg-[var(--trackit-surface-blue)]" />
         </div>
       </main>
     );
@@ -2043,7 +2043,7 @@ export function ProfilePage() {
               navigate("/dashboard");
             }
           }}
-          className="mb-6 inline-flex min-h-10 items-center gap-2 rounded-xl border border-[var(--trackit-border)] bg-white px-4 py-2 text-sm font-semibold text-[var(--trackit-navy)] shadow-sm transition hover:bg-[var(--trackit-blue-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+          className="mb-6 inline-flex min-h-10 items-center gap-2 rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-2 text-sm font-semibold text-[var(--trackit-navy)] shadow-sm transition hover:bg-[var(--trackit-blue-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
         >
           <span aria-hidden="true">←</span>
           Back
@@ -2311,7 +2311,7 @@ export function ProfilePage() {
           </div>
 
           <div className="mt-6 overflow-x-auto">
-            <div className="inline-flex min-w-full gap-2 rounded-2xl border border-[var(--trackit-border)] bg-white p-2 shadow-sm sm:min-w-0">
+            <div className="inline-flex min-w-full gap-2 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-2 shadow-sm sm:min-w-0">
               {activityTabs.map((tab) => (
                 <button
                   key={tab.value}
@@ -2355,7 +2355,7 @@ export function ProfilePage() {
                 }).map((_, index) => (
                   <div
                     key={index}
-                    className="h-48 animate-pulse rounded-2xl bg-slate-200"
+                    className="h-48 animate-pulse rounded-2xl bg-[var(--trackit-surface-blue)]"
                   />
                 ))}
               </div>
@@ -2382,7 +2382,7 @@ export function ProfilePage() {
                 </button>
               </div>
             ) : claims.length === 0 ? (
-              <div className="mt-6 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-white px-6 py-12 text-center">
+              <div className="mt-6 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-6 py-12 text-center">
                 <h3 className="text-lg font-bold text-[var(--trackit-navy)]">
                   No claims yet
                 </h3>
@@ -2417,7 +2417,7 @@ export function ProfilePage() {
               }).map((_, index) => (
                 <div
                   key={index}
-                  className="h-96 animate-pulse rounded-3xl bg-slate-200"
+                  className="h-96 animate-pulse rounded-3xl bg-[var(--trackit-surface-blue)]"
                 />
               ))}
             </div>
@@ -2444,7 +2444,7 @@ export function ProfilePage() {
               </button>
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="mt-6 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-white px-6 py-12 text-center">
+            <div className="mt-6 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-6 py-12 text-center">
               <h3 className="text-lg font-bold text-[var(--trackit-navy)]">
                 {activityFilter ===
                 "all"
@@ -2469,7 +2469,7 @@ export function ProfilePage() {
 
                 <Link
                   to="/items/report-found"
-                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[var(--trackit-border)] bg-white px-5 text-sm font-bold text-[var(--trackit-navy)] hover:border-[var(--trackit-blue)]"
+                  className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] hover:border-[var(--trackit-blue)]"
                 >
                   Report found item
                 </Link>
@@ -2516,7 +2516,7 @@ export function ProfilePage() {
             </div>
 
             <div className="mt-7 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-              <section className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8">
+              <section className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8">
                 {profileError ? (
                   <div
                     role="alert"
@@ -2556,7 +2556,7 @@ export function ProfilePage() {
                         disabled={
                           updateProfileMutation.isPending
                         }
-                        className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                        className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       />
                     </div>
 
@@ -2583,7 +2583,7 @@ export function ProfilePage() {
                         disabled={
                           updateProfileMutation.isPending
                         }
-                        className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                        className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       />
                     </div>
                   </div>
@@ -2612,7 +2612,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                     />
 
                     <FieldHelp>
@@ -2644,7 +2644,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                     />
 
                     <FieldHelp>
@@ -2677,7 +2677,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       placeholder="Optional"
                     />
                   </div>
@@ -2703,7 +2703,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-white px-4 py-3 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       placeholder="Tell the TrackIt community a little about yourself."
                     />
 
@@ -2733,7 +2733,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       placeholder="Optional"
                     />
 
@@ -2766,7 +2766,7 @@ export function ProfilePage() {
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-white px-4 py-3 font-mono text-sm text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-slate-50"
+                      className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 font-mono text-sm text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
                       placeholder={`{
   "website": "https://example.com"
 }`}
@@ -2801,7 +2801,7 @@ export function ProfilePage() {
               </section>
 
               <aside>
-                <section className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm">
+                <section className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm">
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
                     Public profile
                   </p>
@@ -2976,7 +2976,7 @@ export function ProfilePage() {
                   </form>
                 </section>
 
-                <div className="mt-5 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-light)] p-6">
+                <div className="mt-5 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6">
                   <p className="text-sm font-semibold text-[var(--trackit-navy)]">
                     Profile visibility
                   </p>
@@ -3005,7 +3005,7 @@ export function ProfilePage() {
           aria-modal="true"
           aria-labelledby="camera-dialog-title"
         >
-          <div className="w-full max-w-2xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="w-full max-w-2xl overflow-hidden rounded-3xl bg-[var(--trackit-surface)] shadow-2xl">
             <div className="flex items-center justify-between border-b border-[var(--trackit-border)] px-5 py-4 sm:px-6">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
@@ -3092,7 +3092,7 @@ export function ProfilePage() {
                     handleCloseCamera
                   }
                   disabled={isCapturing}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--trackit-border)] bg-white px-5 text-sm font-bold text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -3127,7 +3127,7 @@ export function ProfilePage() {
           aria-modal="true"
           aria-labelledby="picture-editor-title"
         >
-          <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-[var(--trackit-surface)] shadow-2xl">
             <div className="flex items-center justify-between border-b border-[var(--trackit-border)] px-5 py-4 sm:px-6">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
@@ -3160,7 +3160,7 @@ export function ProfilePage() {
                 <div
                   ref={cropAreaRef}
                   className={[
-                    "relative overflow-hidden rounded-full bg-slate-100 shadow-inner touch-none select-none",
+                    "relative overflow-hidden rounded-full bg-[var(--trackit-surface-blue)] shadow-inner touch-none select-none",
                     isDraggingPicture
                       ? "cursor-grabbing"
                       : "cursor-grab",
@@ -3231,7 +3231,7 @@ export function ProfilePage() {
                       pictureEditorBusy
                     }
                     aria-label="Zoom out"
-                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--trackit-border)] bg-white text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--trackit-border)] bg-[var(--trackit-surface)] text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ZoomOutIcon />
                   </button>
@@ -3276,7 +3276,7 @@ export function ProfilePage() {
                       pictureEditorBusy
                     }
                     aria-label="Zoom in"
-                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--trackit-border)] bg-white text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--trackit-border)] bg-[var(--trackit-surface)] text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ZoomInIcon />
                   </button>
@@ -3313,7 +3313,7 @@ export function ProfilePage() {
                     closePictureEditor
                   }
                   disabled={pictureEditorBusy}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--trackit-border)] bg-white px-5 text-sm font-bold text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Cancel
                 </button>

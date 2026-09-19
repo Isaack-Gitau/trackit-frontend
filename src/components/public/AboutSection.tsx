@@ -20,7 +20,7 @@ const principles = [
 
 export function AboutSection() {
   return (
-    <section className="bg-white py-16 sm:py-20 lg:py-24">
+    <section className="bg-[var(--trackit-surface)] py-16 sm:py-20 lg:py-24">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
           <div>
@@ -46,7 +46,7 @@ export function AboutSection() {
 
             <Link
               to="/about"
-              className="mt-7 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-navy)] px-5 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2"
+              className="mt-7 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-dark-card)] px-5 text-sm font-bold !text-[var(--trackit-dark-card-text)] transition-colors hover:bg-[var(--trackit-blue-dark)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-surface)]"
             >
               Learn more about TrackIt
             </Link>

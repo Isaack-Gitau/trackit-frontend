@@ -291,25 +291,25 @@ export function ItemDetailsPage() {
     return (
       <main className="min-h-[70vh] bg-[var(--trackit-surface)] px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto w-full max-w-6xl animate-pulse">
-          <div className="h-5 w-24 rounded bg-slate-200" />
+          <div className="h-5 w-24 rounded bg-[var(--trackit-surface-blue)]" />
 
           <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-            <div className="overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm">
-              <div className="aspect-[4/3] bg-slate-200" />
+            <div className="overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm">
+              <div className="aspect-[4/3] bg-[var(--trackit-surface-blue)]" />
 
               <div className="space-y-4 p-6 sm:p-8">
-                <div className="h-5 w-28 rounded bg-slate-200" />
-                <div className="h-9 w-3/4 rounded bg-slate-200" />
-                <div className="h-4 w-full rounded bg-slate-200" />
-                <div className="h-4 w-5/6 rounded bg-slate-200" />
+                <div className="h-5 w-28 rounded bg-[var(--trackit-surface-blue)]" />
+                <div className="h-9 w-3/4 rounded bg-[var(--trackit-surface-blue)]" />
+                <div className="h-4 w-full rounded bg-[var(--trackit-surface-blue)]" />
+                <div className="h-4 w-5/6 rounded bg-[var(--trackit-surface-blue)]" />
               </div>
             </div>
 
-            <div className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8">
-              <div className="h-6 w-32 rounded bg-slate-200" />
-              <div className="mt-6 h-16 rounded-2xl bg-slate-200" />
-              <div className="mt-4 h-16 rounded-2xl bg-slate-200" />
-              <div className="mt-4 h-16 rounded-2xl bg-slate-200" />
+            <div className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8">
+              <div className="h-6 w-32 rounded bg-[var(--trackit-surface-blue)]" />
+              <div className="mt-6 h-16 rounded-2xl bg-[var(--trackit-surface-blue)]" />
+              <div className="mt-4 h-16 rounded-2xl bg-[var(--trackit-surface-blue)]" />
+              <div className="mt-4 h-16 rounded-2xl bg-[var(--trackit-surface-blue)]" />
             </div>
           </div>
         </div>
@@ -335,7 +335,7 @@ export function ItemDetailsPage() {
 
           <section
             role="alert"
-            className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-white p-8 text-center shadow-sm sm:p-12"
+            className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-8 text-center shadow-sm sm:p-12"
           >
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--trackit-blue-soft)] text-2xl font-bold text-[var(--trackit-blue)]">
               ?
@@ -388,7 +388,7 @@ export function ItemDetailsPage() {
         </button>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <article className="overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm">
+          <article className="overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm">
             <div className="bg-[var(--trackit-deep-navy)]">
               {imageUrl ? (
                 <div className="aspect-[4/3] overflow-hidden">
@@ -496,7 +496,7 @@ export function ItemDetailsPage() {
             </div>
           </article>
 
-          <aside className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8">
+          <aside className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
                 About this report
@@ -536,7 +536,7 @@ export function ItemDetailsPage() {
 
         <section
           aria-labelledby="comments-heading"
-          className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-white shadow-sm"
+          className="mt-8 rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm"
         >
           <div className="border-b border-[var(--trackit-border)] px-6 py-6 sm:px-8">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
@@ -587,7 +587,7 @@ export function ItemDetailsPage() {
                     maxLength={2000}
                     disabled={isCommentSubmitting}
                     placeholder="Share information that may help with this report..."
-                    className="mt-3 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-white px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none transition placeholder:text-slate-400 focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className="mt-3 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none transition placeholder:text-[var(--trackit-text-muted)] focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]"
                   />
 
                   <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -667,12 +667,12 @@ export function ItemDetailsPage() {
                     className="animate-pulse rounded-2xl border border-[var(--trackit-border)] p-5"
                   >
                     <div className="flex gap-3">
-                      <div className="h-10 w-10 rounded-full bg-slate-200" />
+                      <div className="h-10 w-10 rounded-full bg-[var(--trackit-surface-blue)]" />
 
                       <div className="flex-1">
-                        <div className="h-4 w-28 rounded bg-slate-200" />
-                        <div className="mt-3 h-4 w-full rounded bg-slate-200" />
-                        <div className="mt-2 h-4 w-4/5 rounded bg-slate-200" />
+                        <div className="h-4 w-28 rounded bg-[var(--trackit-surface-blue)]" />
+                        <div className="mt-3 h-4 w-full rounded bg-[var(--trackit-surface-blue)]" />
+                        <div className="mt-2 h-4 w-4/5 rounded bg-[var(--trackit-surface-blue)]" />
                       </div>
                     </div>
                   </div>
@@ -804,7 +804,7 @@ export function ItemDetailsPage() {
                                 disabled={
                                   isCommentUpdating
                                 }
-                                className="w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-white px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                                className="w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]"
                               />
 
                               <div className="mt-3 flex flex-wrap gap-2">
@@ -829,7 +829,7 @@ export function ItemDetailsPage() {
                                   disabled={
                                     isCommentUpdating
                                   }
-                                  className="min-h-9 rounded-lg border border-[var(--trackit-border)] bg-white px-4 text-xs font-bold text-[var(--trackit-navy)] transition hover:bg-[var(--trackit-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
+                                  className="min-h-9 rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-xs font-bold text-[var(--trackit-navy)] transition hover:bg-[var(--trackit-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                   Cancel
                                 </button>

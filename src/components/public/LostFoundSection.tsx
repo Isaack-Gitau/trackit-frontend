@@ -80,8 +80,8 @@ function LostFoundCard({
       className={[
         "relative overflow-hidden rounded-3xl border p-7 shadow-sm sm:p-8 lg:p-10",
         isDark
-          ? "border-[var(--trackit-navy)] bg-[var(--trackit-navy)] text-white"
-          : "border-[var(--trackit-border)] bg-white text-[var(--trackit-navy)]",
+          ? "border-[var(--trackit-dark-card-border)] bg-[var(--trackit-dark-card)] text-[var(--trackit-dark-card-text)]"
+          : "border-[var(--trackit-landing-card-border)] bg-[var(--trackit-landing-card-bg)] text-[var(--trackit-landing-card-text)]",
       ].join(" ")}
     >
       <div
@@ -98,9 +98,7 @@ function LostFoundCard({
         <p
           className={[
             "text-xs font-bold uppercase tracking-[0.16em]",
-            isDark
-              ? "text-[var(--trackit-blue-bright)]"
-              : "text-[var(--trackit-blue)]",
+            "text-[var(--trackit-blue-bright)]",
           ].join(" ")}
         >
           {eyebrow}
@@ -109,7 +107,9 @@ function LostFoundCard({
         <h3
           className={[
             "mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl",
-            isDark ? "text-white" : "text-[var(--trackit-navy)]",
+            isDark
+              ? "text-[var(--trackit-dark-card-text)]"
+              : "text-[var(--trackit-landing-card-text)]",
           ].join(" ")}
         >
           {title}
@@ -119,8 +119,8 @@ function LostFoundCard({
           className={[
             "mt-4 text-sm leading-7 sm:text-base",
             isDark
-              ? "text-[var(--trackit-text-on-dark)]"
-              : "text-[var(--trackit-text-muted)]",
+              ? "text-[var(--trackit-dark-card-muted)]"
+              : "text-[var(--trackit-landing-card-muted)]",
           ].join(" ")}
         >
           {description}
@@ -147,8 +147,8 @@ function LostFoundCard({
               <span
                 className={
                   isDark
-                    ? "text-[var(--trackit-text-on-dark)]"
-                    : "text-[var(--trackit-text-muted)]"
+                    ? "text-[var(--trackit-dark-card-muted)]"
+                    : "text-[var(--trackit-landing-card-muted)]"
                 }
               >
                 {point}
@@ -164,8 +164,8 @@ function LostFoundCard({
               "inline-flex min-h-11 items-center justify-center rounded-lg px-5 text-sm font-bold transition-colors",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2",
               isDark
-                ? "bg-[var(--trackit-blue)] text-white hover:bg-[var(--trackit-blue-hover)] focus-visible:ring-offset-[var(--trackit-navy)]"
-                : "border border-[var(--trackit-blue)] bg-white text-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:ring-offset-white",
+                ? "bg-[var(--trackit-blue)] text-white hover:bg-[var(--trackit-blue-hover)] focus-visible:ring-offset-[var(--trackit-dark-card)]"
+                : "border border-[var(--trackit-blue)] bg-[var(--trackit-landing-card-bg)] text-[var(--trackit-blue)] hover:bg-[var(--trackit-surface-blue)] focus-visible:ring-offset-[var(--trackit-landing-card-bg)]",
             ].join(" ")}
           >
             {actionLabel}
@@ -175,3 +175,4 @@ function LostFoundCard({
     </article>
   );
 }
+

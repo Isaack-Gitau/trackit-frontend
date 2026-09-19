@@ -17,7 +17,7 @@ export function VerificationRequiredPage() {
     <main className="min-h-screen bg-[var(--trackit-surface)]">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="mx-auto w-full max-w-xl">
-          <div className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-10">
+          <div className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-10">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--trackit-blue-soft)] text-2xl text-[var(--trackit-blue)]">
               ✉
             </div>
@@ -36,7 +36,7 @@ export function VerificationRequiredPage() {
             </p>
 
             {email ? (
-              <div className="mt-6 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-4">
+              <div className="mt-6 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
                 <p className="text-sm text-[var(--trackit-text-muted)]">
                   Account email
                 </p>

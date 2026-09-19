@@ -37,12 +37,16 @@ export type TrackItButtonProps = ButtonProps | LinkButtonProps;
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
     "bg-[var(--trackit-blue)] text-white shadow-sm hover:bg-[var(--trackit-blue-hover)]",
+
   secondary:
-    "bg-[var(--trackit-navy)] text-white shadow-sm hover:bg-[var(--trackit-blue-dark)]",
+    "bg-[var(--trackit-button-secondary-bg)] text-white shadow-sm hover:bg-[var(--trackit-button-secondary-hover)]",
+
   outline:
-    "border border-[var(--trackit-border)] bg-white text-[var(--trackit-navy)] hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)]",
+    "border border-[var(--trackit-border)] bg-[var(--trackit-surface)] text-[var(--trackit-navy)] hover:border-[var(--trackit-blue)] hover:text-[var(--trackit-blue)]",
+
   danger:
-    "bg-red-600 text-white shadow-sm hover:bg-red-700",
+    "bg-[var(--trackit-danger)] text-white shadow-sm hover:bg-[var(--trackit-danger-hover)]",
+
   ghost:
     "bg-transparent text-[var(--trackit-navy)] hover:bg-[var(--trackit-blue-soft)]",
 };

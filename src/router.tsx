@@ -29,6 +29,7 @@ import { PrivacyPage } from "./pages/public/PrivacyPage";
 import { ItemDetailsPage } from "./pages/public/ItemDetailsPage";
 import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { ProfilePage } from "./pages/app/ProfilePage";
+import { SettingsPage } from "./pages/app/SettingsPage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
 
@@ -191,7 +192,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/settings",
-            element: <PlaceholderPage title="Settings" />,
+            element: <SettingsPage />,
           },
         ],
       },

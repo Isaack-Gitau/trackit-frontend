@@ -9,12 +9,12 @@ export function AccountInactivePage() {
     <main className="min-h-screen bg-[var(--trackit-surface)]">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-10 sm:px-6 lg:px-8">
         <section className="mx-auto w-full max-w-xl">
-          <div className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-10">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl text-amber-700">
+          <div className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-10">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--trackit-warning-soft)] text-2xl font-bold text-[var(--trackit-warning)]">
               !
             </div>
 
-            <p className="mt-6 text-sm font-bold uppercase tracking-[0.16em] text-amber-700">
+            <p className="mt-6 text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-warning)]">
               Account inactive
             </p>
 
@@ -27,12 +27,12 @@ export function AccountInactivePage() {
               is inactive.
             </p>
 
-            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-              <h2 className="font-semibold text-amber-900">
+            <div className="mt-6 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-warning-soft)] p-5">
+              <h2 className="font-semibold text-[var(--trackit-warning)]">
                 What you can do
               </h2>
 
-              <p className="mt-2 text-sm leading-6 text-amber-800">
+              <p className="mt-2 text-sm leading-6 text-[var(--trackit-text-muted)]">
                 If your account was temporarily deactivated, access may be
                 restored when the deactivation period ends. If you believe
                 your account should be active, please contact TrackIt support.
@@ -81,3 +81,4 @@ export function AccountInactivePage() {
     </main>
   );
 }
+

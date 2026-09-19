@@ -90,3 +90,19 @@ export async function getPublicProfile(
     signal,
   });
 }
+
+export async function deleteAccount(
+  currentPassword: string,
+  accessToken: string,
+  signal?: AbortSignal,
+): Promise<void> {
+  await apiRequest<void>({
+    method: "DELETE",
+    path: "/api/profile/account",
+    body: {
+      current_password: currentPassword,
+    },
+    accessToken,
+    signal,
+  });
+}

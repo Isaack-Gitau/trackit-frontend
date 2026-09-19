@@ -90,6 +90,9 @@ export function ResetPasswordPage() {
     confirmPassword.length > 0 &&
     password === confirmPassword;
 
+  const inputClasses =
+    "min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 pr-24 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
   useEffect(() => {
     if (!token) {
       setErrorMessage(
@@ -97,12 +100,6 @@ export function ResetPasswordPage() {
       );
     }
   }, [token]);
-
-  useEffect(() => {
-    return () => {
-      // Prevent a pending redirect timer from firing after unmount.
-    };
-  }, []);
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
@@ -164,7 +161,7 @@ export function ResetPasswordPage() {
 
   return (
     <main className="min-h-screen bg-[var(--trackit-midnight)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
+      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
         <section className="hidden bg-[var(--trackit-deep-navy)] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
           <div>
             <Link
@@ -205,7 +202,7 @@ export function ResetPasswordPage() {
           </div>
         </section>
 
-        <section className="bg-white p-6 sm:p-10 lg:p-12 xl:p-14">
+        <section className="bg-[var(--trackit-surface)] p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto w-full max-w-md">
             <div className="lg:hidden">
               <Link
@@ -237,7 +234,7 @@ export function ResetPasswordPage() {
             {errorMessage ? (
               <div
                 role="alert"
-                className="mt-7 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800"
+                className="mt-7 rounded-xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--trackit-danger-text)]"
               >
                 {errorMessage}
               </div>
@@ -246,7 +243,7 @@ export function ResetPasswordPage() {
             {successMessage ? (
               <div
                 role="status"
-                className="mt-7 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm leading-6 text-emerald-800"
+                className="mt-7 rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-success-soft)] px-4 py-3 text-sm leading-6 text-[var(--trackit-success)]"
               >
                 {successMessage}
               </div>
@@ -282,7 +279,7 @@ export function ResetPasswordPage() {
                       minLength={8}
                       maxLength={128}
                       disabled={isSubmitting}
-                      className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 pr-24 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                      className={inputClasses}
                       placeholder="Enter your new password"
                       aria-invalid={
                         password.length > 0 &&
@@ -336,7 +333,7 @@ export function ResetPasswordPage() {
                       minLength={8}
                       maxLength={128}
                       disabled={isSubmitting}
-                      className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 pr-24 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                      className={inputClasses}
                       placeholder="Enter your new password again"
                       aria-invalid={
                         confirmPassword.length > 0 &&
@@ -365,7 +362,7 @@ export function ResetPasswordPage() {
 
                   {confirmPassword.length > 0 &&
                   password !== confirmPassword ? (
-                    <p className="mt-2 text-xs leading-5 text-red-700">
+                    <p className="mt-2 text-xs leading-5 text-[var(--trackit-danger)]">
                       The passwords do not match.
                     </p>
                   ) : null}
@@ -380,7 +377,7 @@ export function ResetPasswordPage() {
                     <li
                       className={
                         passwordRequirements.length
-                          ? "text-emerald-700"
+                          ? "text-[var(--trackit-success)]"
                           : "text-[var(--trackit-text-muted)]"
                       }
                     >
@@ -391,7 +388,7 @@ export function ResetPasswordPage() {
                     <li
                       className={
                         passwordRequirements.uppercase
-                          ? "text-emerald-700"
+                          ? "text-[var(--trackit-success)]"
                           : "text-[var(--trackit-text-muted)]"
                       }
                     >
@@ -402,7 +399,7 @@ export function ResetPasswordPage() {
                     <li
                       className={
                         passwordRequirements.lowercase
-                          ? "text-emerald-700"
+                          ? "text-[var(--trackit-success)]"
                           : "text-[var(--trackit-text-muted)]"
                       }
                     >
@@ -413,7 +410,7 @@ export function ResetPasswordPage() {
                     <li
                       className={
                         passwordRequirements.number
-                          ? "text-emerald-700"
+                          ? "text-[var(--trackit-success)]"
                           : "text-[var(--trackit-text-muted)]"
                       }
                     >
@@ -424,7 +421,7 @@ export function ResetPasswordPage() {
                     <li
                       className={
                         passwordRequirements.special
-                          ? "text-emerald-700"
+                          ? "text-[var(--trackit-success)]"
                           : "text-[var(--trackit-text-muted)]"
                       }
                     >

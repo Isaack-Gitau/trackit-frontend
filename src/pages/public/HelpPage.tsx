@@ -138,7 +138,7 @@ export function HelpPage() {
               {helpSections.map((section) => (
                 <section
                   key={section.title}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <h3 className="text-xl font-extrabold text-[var(--trackit-navy)]">
                     {section.title}

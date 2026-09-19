@@ -77,7 +77,7 @@ export function ContactPage() {
               <div className="mt-8 space-y-4">
                 <a
                   href="mailto:isaackgofficial@gmail.com"
-                  className="group block rounded-2xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] sm:p-6"
+                  className="group block rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] sm:p-6"
                 >
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
                     Email support
@@ -97,7 +97,7 @@ export function ContactPage() {
                   href="https://wa.me/254743570561"
                   target="_blank"
                   rel="noreferrer"
-                  className="group block rounded-2xl border border-[var(--trackit-border)] bg-white p-5 shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] sm:p-6"
+                  className="group block rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm transition-colors hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] sm:p-6"
                 >
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
                     WhatsApp
@@ -227,7 +227,7 @@ function GuidanceCard({
   description,
 }: GuidanceCardProps) {
   return (
-    <article className="rounded-2xl border border-[var(--trackit-border)] bg-white p-6">
+    <article className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6">
       <h3 className="text-lg font-extrabold text-[var(--trackit-navy)]">
         {title}
       </h3>

@@ -116,9 +116,9 @@ export function SafetyPage() {
               {principles.map((principle) => (
                 <article
                   key={principle.number}
-                  className="rounded-3xl border border-[var(--trackit-border)] bg-white p-6 shadow-sm sm:p-8"
+                  className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--trackit-dark-card)] text-sm font-extrabold text-[var(--trackit-dark-card-text)]">
                     {principle.number}
                   </div>
 
@@ -151,7 +151,7 @@ export function SafetyPage() {
               {safetyGuidelines.map((guideline) => (
                 <article
                   key={guideline.title}
-                  className="rounded-2xl border border-[var(--trackit-border)] bg-white p-6"
+                  className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6"
                 >
                   <h3 className="text-lg font-extrabold text-[var(--trackit-navy)]">
                     {guideline.title}
@@ -197,16 +197,16 @@ export function SafetyPage() {
         </section>
 
         <section className="px-5 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
-          <div className="mx-auto w-full max-w-4xl rounded-[2rem] bg-[var(--trackit-navy)] px-6 py-12 text-center sm:px-10 sm:py-16">
+          <div className="mx-auto w-full max-w-4xl rounded-[2rem] bg-[var(--trackit-dark-card)] px-6 py-12 text-center sm:px-10 sm:py-16">
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
               Need help?
             </p>
 
-            <h2 className="mt-4 text-3xl font-extrabold tracking-tight !text-white sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-extrabold tracking-tight !text-[var(--trackit-dark-card-text)] sm:text-4xl">
               If something feels wrong, take a step back.
             </h2>
 
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 !text-[var(--trackit-text-on-dark)]">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 !text-[var(--trackit-dark-card-muted)]">
               Do not share more information than necessary or feel pressured
               into a return. Use TrackIt&apos;s reporting and support channels
               when you need help with an interaction.
@@ -215,14 +215,14 @@ export function SafetyPage() {
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/help"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Visit Help
               </Link>
 
               <Link
                 to="/contact"
-                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold !text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold !text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Contact TrackIt
               </Link>

@@ -108,7 +108,10 @@ function getLoginErrorMessage(error: unknown): string {
     return "TrackIt is temporarily unable to sign you in. Please try again shortly.";
   }
 
-  return error.message || "We could not sign you in right now. Please try again.";
+  return (
+    error.message ||
+    "We could not sign you in right now. Please try again."
+  );
 }
 
 export function PortalSignInPage({
@@ -127,7 +130,11 @@ export function PortalSignInPage({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (status !== "authenticated" || !isAuthenticated || !user) {
+    if (
+      status !== "authenticated" ||
+      !isAuthenticated ||
+      !user
+    ) {
       return;
     }
 
@@ -169,7 +176,8 @@ export function PortalSignInPage({
         role,
       );
 
-      const state = location.state as SignInLocationState | null;
+      const state =
+        location.state as SignInLocationState | null;
       const from = state?.from;
 
       const destination =
@@ -188,9 +196,15 @@ export function PortalSignInPage({
   const isPrivilegedPortal =
     role === "moderator" || role === "admin";
 
+  const inputClasses =
+    "mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
+  const passwordInputClasses =
+    "min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 pr-24 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
   return (
     <main className="min-h-screen bg-[var(--trackit-midnight)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
+      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
         <section className="hidden bg-[var(--trackit-deep-navy)] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
           <div>
             <Link
@@ -239,7 +253,7 @@ export function PortalSignInPage({
           </div>
         </section>
 
-        <section className="bg-white p-6 sm:p-10 lg:p-12 xl:p-14">
+        <section className="bg-[var(--trackit-surface)] p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto w-full max-w-md">
             <div className="lg:hidden">
               <Link
@@ -270,7 +284,7 @@ export function PortalSignInPage({
             {errorMessage ? (
               <div
                 role="alert"
-                className="mt-7 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800"
+                className="mt-7 rounded-xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--trackit-danger-text)]"
               >
                 {errorMessage}
               </div>
@@ -303,7 +317,7 @@ export function PortalSignInPage({
                   minLength={3}
                   maxLength={255}
                   disabled={isSubmitting}
-                  className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                  className={inputClasses}
                   placeholder="Enter your username or email"
                   aria-invalid={
                     identifier.length > 0 &&
@@ -344,7 +358,7 @@ export function PortalSignInPage({
                     minLength={1}
                     maxLength={128}
                     disabled={isSubmitting}
-                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 pr-24 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={passwordInputClasses}
                     placeholder="Enter your password"
                   />
 

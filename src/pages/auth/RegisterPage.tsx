@@ -69,11 +69,9 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
-
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -160,7 +158,6 @@ export function RegisterPage() {
     event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
-
     setErrorMessage("");
 
     if (!formIsValid) {
@@ -195,9 +192,15 @@ export function RegisterPage() {
     }
   }
 
+  const inputClasses =
+    "mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
+  const passwordInputClasses =
+    "min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 pr-24 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
   return (
     <main className="min-h-screen bg-[var(--trackit-midnight)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
+      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-[var(--trackit-surface)] shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
         <section className="hidden bg-[var(--trackit-deep-navy)] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
           <div>
             <Link
@@ -234,7 +237,7 @@ export function RegisterPage() {
           </p>
         </section>
 
-        <section className="bg-white p-6 sm:p-10 lg:p-12 xl:p-14">
+        <section className="bg-[var(--trackit-surface)] p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto w-full max-w-md">
             <div className="lg:hidden">
               <Link
@@ -265,7 +268,7 @@ export function RegisterPage() {
             {errorMessage ? (
               <div
                 role="alert"
-                className="mt-7 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800"
+                className="mt-7 rounded-xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--trackit-danger-text)]"
               >
                 {errorMessage}
               </div>
@@ -295,7 +298,7 @@ export function RegisterPage() {
                     required
                     maxLength={100}
                     disabled={isSubmitting}
-                    className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={inputClasses}
                     placeholder="John"
                     aria-invalid={
                       firstName.length > 0 && !firstNameIsValid
@@ -303,7 +306,7 @@ export function RegisterPage() {
                   />
 
                   {firstName.length > 0 && !firstNameIsValid ? (
-                    <p className="mt-2 text-xs leading-5 text-red-700">
+                    <p className="mt-2 text-xs leading-5 text-[var(--trackit-danger)]">
                       Use letters, spaces, hyphens, or apostrophes only.
                     </p>
                   ) : null}
@@ -327,7 +330,7 @@ export function RegisterPage() {
                     required
                     maxLength={100}
                     disabled={isSubmitting}
-                    className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={inputClasses}
                     placeholder="Doe"
                     aria-invalid={
                       lastName.length > 0 && !lastNameIsValid
@@ -335,7 +338,7 @@ export function RegisterPage() {
                   />
 
                   {lastName.length > 0 && !lastNameIsValid ? (
-                    <p className="mt-2 text-xs leading-5 text-red-700">
+                    <p className="mt-2 text-xs leading-5 text-[var(--trackit-danger)]">
                       Use letters, spaces, hyphens, or apostrophes only.
                     </p>
                   ) : null}
@@ -361,7 +364,7 @@ export function RegisterPage() {
                   minLength={3}
                   maxLength={50}
                   disabled={isSubmitting}
-                  className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                  className={inputClasses}
                   placeholder="John_Doe"
                   aria-invalid={
                     username.length > 0 && !usernameIsValid
@@ -392,7 +395,7 @@ export function RegisterPage() {
                   required
                   maxLength={255}
                   disabled={isSubmitting}
-                  className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                  className={inputClasses}
                   placeholder="you@example.com"
                   aria-invalid={
                     email.length > 0 && !emailIsValid
@@ -420,7 +423,7 @@ export function RegisterPage() {
                     minLength={8}
                     maxLength={128}
                     disabled={isSubmitting}
-                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 pr-24 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={passwordInputClasses}
                     placeholder="Create a strong password"
                   />
 
@@ -441,7 +444,7 @@ export function RegisterPage() {
                   </button>
                 </div>
 
-                <div className="mt-3 rounded-xl bg-[var(--trackit-surface)] p-4">
+                <div className="mt-3 rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
                   <p className="text-xs font-semibold text-[var(--trackit-navy)]">
                     Password requirements
                   </p>
@@ -452,7 +455,7 @@ export function RegisterPage() {
                         key={requirement.label}
                         className={`text-xs ${
                           requirement.valid
-                            ? "text-emerald-700"
+                            ? "text-[var(--trackit-success)]"
                             : "text-[var(--trackit-text-muted)]"
                         }`}
                       >
@@ -490,7 +493,7 @@ export function RegisterPage() {
                     minLength={8}
                     maxLength={128}
                     disabled={isSubmitting}
-                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 pr-24 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={passwordInputClasses}
                     placeholder="Enter your password again"
                   />
 
@@ -515,13 +518,13 @@ export function RegisterPage() {
 
                 {confirmPassword.length > 0 &&
                 !passwordsMatch ? (
-                  <p className="mt-2 text-xs font-medium text-red-700">
+                  <p className="mt-2 text-xs font-medium text-[var(--trackit-danger)]">
                     Passwords do not match.
                   </p>
                 ) : null}
               </div>
 
-              <div className="rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-4">
+              <div className="rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
                 <label
                   htmlFor="terms-accepted"
                   className="flex cursor-pointer items-start gap-3"
@@ -597,4 +600,3 @@ export function RegisterPage() {
     </main>
   );
 }
-

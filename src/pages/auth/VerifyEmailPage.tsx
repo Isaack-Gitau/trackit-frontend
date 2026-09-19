@@ -96,6 +96,9 @@ export function VerifyEmailPage() {
   const [resendError, setResendError] = useState("");
   const [isResending, setIsResending] = useState(false);
 
+  const inputClasses =
+    "mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-input-border)] bg-[var(--trackit-input-surface)] px-4 text-[var(--trackit-navy)] placeholder:text-[var(--trackit-text-muted)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]";
+
   useEffect(() => {
     if (!token) {
       setVerification({
@@ -209,7 +212,7 @@ export function VerifyEmailPage() {
 
   return (
     <main className="min-h-screen bg-[var(--trackit-midnight)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
+      <div className="mx-auto grid w-full max-w-6xl overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-2xl shadow-black/20 lg:grid-cols-[1fr_1.05fr]">
         <section className="hidden bg-[var(--trackit-deep-navy)] p-10 text-white lg:flex lg:flex-col lg:justify-between xl:p-14">
           <div>
             <Link
@@ -244,7 +247,7 @@ export function VerifyEmailPage() {
           </p>
         </section>
 
-        <section className="bg-white p-6 sm:p-10 lg:p-12 xl:p-14">
+        <section className="bg-[var(--trackit-surface)] p-6 sm:p-10 lg:p-12 xl:p-14">
           <div className="mx-auto w-full max-w-md">
             <div className="lg:hidden">
               <Link
@@ -275,7 +278,7 @@ export function VerifyEmailPage() {
             </div>
 
             {isVerifying ? (
-              <div className="mt-8 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6">
+              <div className="mt-8 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-6">
                 <div className="flex items-start gap-4">
                   <span
                     aria-hidden="true"
@@ -299,22 +302,22 @@ export function VerifyEmailPage() {
             {isVerified ? (
               <div
                 role="status"
-                className="mt-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6"
+                className="mt-8 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-success-soft)] p-6"
               >
                 <div className="flex items-start gap-4">
                   <span
                     aria-hidden="true"
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-sm font-bold text-white"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--trackit-success)] text-sm font-bold text-white"
                   >
                     ✓
                   </span>
 
                   <div>
-                    <h3 className="font-semibold text-emerald-900">
+                    <h3 className="font-semibold text-[var(--trackit-success)]">
                       Email verified
                     </h3>
 
-                    <p className="mt-1 text-sm leading-6 text-emerald-800">
+                    <p className="mt-1 text-sm leading-6 text-[var(--trackit-success)]">
                       {verification.message}
                     </p>
                   </div>
@@ -340,13 +343,13 @@ export function VerifyEmailPage() {
             {verification.status === "error" ? (
               <div
                 role="alert"
-                className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-5"
+                className="mt-8 rounded-2xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] p-5"
               >
-                <h3 className="font-semibold text-red-900">
+                <h3 className="font-semibold text-[var(--trackit-danger-text)]">
                   Verification unsuccessful
                 </h3>
 
-                <p className="mt-1 text-sm leading-6 text-red-800">
+                <p className="mt-1 text-sm leading-6 text-[var(--trackit-danger-text)]">
                   {verification.message}
                 </p>
               </div>
@@ -355,7 +358,7 @@ export function VerifyEmailPage() {
             {verification.status === "ready" ? (
               <div
                 role="status"
-                className="mt-8 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5"
+                className="mt-8 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-5"
               >
                 <h3 className="font-semibold text-[var(--trackit-navy)]">
                   Check your inbox
@@ -395,7 +398,7 @@ export function VerifyEmailPage() {
                     required
                     maxLength={255}
                     disabled={isResending}
-                    className="mt-2 min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-white px-4 text-[var(--trackit-navy)] shadow-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+                    className={inputClasses}
                     placeholder="you@example.com"
                   />
                 </div>
@@ -403,7 +406,7 @@ export function VerifyEmailPage() {
                 {resendError ? (
                   <div
                     role="alert"
-                    className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800"
+                    className="rounded-xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--trackit-danger-text)]"
                   >
                     {resendError}
                   </div>
