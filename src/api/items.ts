@@ -84,3 +84,18 @@ export async function getMyItems(
     signal: options?.signal,
   });
 }
+
+export async function deleteItem(
+  itemId: number,
+  accessToken: string,
+  options?: {
+    signal?: AbortSignal;
+  },
+): Promise<void> {
+  await apiRequest<void>({
+    method: "DELETE",
+    path: `/api/items/${itemId}`,
+    accessToken,
+    signal: options?.signal,
+  });
+}

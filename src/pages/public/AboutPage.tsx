@@ -5,7 +5,7 @@ const principles = [
     number: "01",
     title: "Structured",
     description:
-      "TrackIt turns scattered lost-and-found information into organized reports with the details needed to understand an item and its situation.",
+      "TrackIt turns scattered lost-and-found information into organized posts with the details needed to understand an item and its situation.",
   },
   {
     number: "02",
@@ -29,9 +29,9 @@ const principles = [
 
 const problems = [
   {
-    title: "Scattered reports",
+    title: "Scattered posts",
     description:
-      "Lost-and-found information can become difficult to follow when reports are spread across social media posts, messages, groups, and conversations.",
+      "Lost-and-found information can become difficult to follow when posts are spread across social media posts, messages, groups, and conversations.",
   },
   {
     title: "Incomplete information",
@@ -71,7 +71,7 @@ export function AboutPage() {
 
             <p className="mt-6 max-w-2xl text-base leading-8 !text-[var(--trackit-text-on-dark)] sm:text-lg">
               TrackIt is a lost-and-found platform designed to organize the
-              journey from reporting an item to discovering possibilities,
+              journey from posting an item to discovering possibilities,
               verifying ownership, and working toward a responsible return.
             </p>
           </div>
@@ -100,7 +100,7 @@ export function AboutPage() {
 
                 <p>
                   TrackIt is designed to provide a dedicated place where lost
-                  and found reports can be recorded in a more consistent way.
+                  and found posts can be recorded in a more consistent way.
                   Instead of treating every situation as an isolated post,
                   TrackIt creates a structured journey around the item.
                 </p>
@@ -122,14 +122,14 @@ export function AboutPage() {
               <div className="mt-6 space-y-4">
                 <ApproachRow
                   number="01"
-                  title="Report"
+                  title="Post"
                   description="Create a useful record of what was lost or found."
                 />
 
                 <ApproachRow
                   number="02"
                   title="Discover"
-                  description="Identify reports that may be relevant."
+                  description="Identify posts that may be relevant."
                 />
 
                 <ApproachRow
@@ -236,13 +236,13 @@ export function AboutPage() {
               </p>
 
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight !text-white sm:text-4xl">
-                Every report is part of a larger journey.
+                Every post is part of a larger journey.
               </h2>
             </div>
 
             <div>
               <p className="text-base leading-8 !text-[var(--trackit-text-on-dark)]">
-                TrackIt connects reporting, discovery, claims, verification,
+                TrackIt connects posting, discovery, claims, verification,
                 communication, and returns into one platform. As the system
                 grows, these connected workflows can provide a clearer
                 experience for people who have lost something and people who
@@ -269,7 +269,7 @@ export function AboutPage() {
             </h2>
 
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 !text-[var(--trackit-dark-card-muted)]">
-              Create an account and use TrackIt to report, discover, verify,
+              Create an account and use TrackIt to post, discover, verify,
               and manage your lost-and-found activity.
             </p>
 

@@ -7,26 +7,37 @@ import {
   type FormEvent,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 
 import { API_BASE_URL } from "../../api/config";
+
 import {
   ApiError,
   getApiErrorMessage,
 } from "../../api/errors";
+
 import { Button } from "../../components/ui/Button";
+
 import { useAuth } from "../../context/AuthContext";
+
 import { useMyClaims } from "../../hooks/useMyClaims";
+
 import { useMyItems } from "../../hooks/useMyItems";
+
 import {
   useDeleteProfilePicture,
   useUpdateProfile,
   useUpdateProfilePrivacy,
   useUploadProfilePicture,
 } from "../../hooks/useProfileMutations";
+
 import { useProfile } from "../../hooks/useProfile";
+
 import type { ClaimStatus } from "../../types/claim";
+
 import type { Item } from "../../types/item";
+
 import type {
   ProfilePrivacyUpdatePayload,
   ProfileSocialLinks,
@@ -291,8 +302,11 @@ const DEFAULT_PRIVACY: PrivacyState = {
 };
 
 const PROFILE_CROP_SIZE = 320;
+
 const PROFILE_CROP_MIN_ZOOM = 1;
+
 const PROFILE_CROP_MAX_ZOOM = 3;
+
 const PROFILE_CROP_ZOOM_STEP = 0.1;
 
 function createFormState(
@@ -448,11 +462,13 @@ function ItemPlaceholderIcon() {
         height="16"
         rx="2"
       />
+
       <circle
         cx="8.5"
         cy="9"
         r="1.5"
       />
+
       <path d="m21 15-4.5-4.5L7 20" />
     </svg>
   );
@@ -610,7 +626,7 @@ function ItemCard({
 
           <p className="text-[var(--trackit-text-muted)]">
             <span className="font-bold text-[var(--trackit-navy)]">
-              Reported:
+              Posted:
             </span>{" "}
             {formatDate(item.created_at)}
           </p>
@@ -678,6 +694,7 @@ export function ProfilePage() {
   const {
     accessToken,
     user: authenticatedUser,
+    logout,
     refreshUser,
   } = useAuth();
 
@@ -832,8 +849,11 @@ export function ProfilePage() {
     revokePictureEditorUrl();
 
     setPictureEditor(null);
+
     setIsPictureEditorOpen(false);
+
     setIsDraggingPicture(false);
+
     pictureDragRef.current = null;
   }
 
@@ -1033,22 +1053,28 @@ export function ProfilePage() {
   );
 
   const items = myItemsQuery.data ?? [];
+
   const claims = myClaimsQuery.data ?? [];
 
   const statistics = useMemo(
     () => ({
       posted: items.length,
+
       lost: items.filter(
         (item) => item.type === "lost",
       ).length,
+
       found: items.filter(
         (item) => item.type === "found",
       ).length,
+
       claimed: items.filter(
         (item) =>
           item.status === "claimed",
       ).length,
+
       claims: claims.length,
+
       approvedClaims: claims.filter(
         (claim) =>
           claim.status === "approved",
@@ -1107,7 +1133,6 @@ export function ProfilePage() {
     form === null
   ) {
     return (
-      
       <main className="min-h-screen bg-[var(--trackit-surface)] px-5 py-10 sm:px-6 lg:px-8 lg:py-16">
         <div className="mx-auto w-full max-w-7xl animate-pulse">
           <div className="h-72 rounded-3xl bg-[var(--trackit-surface-blue)]" />
@@ -1234,7 +1259,9 @@ export function ProfilePage() {
       });
 
       setProfilePictureMessage("");
+
       setProfilePictureError("");
+
       setIsPictureEditorOpen(true);
     };
 
@@ -1465,6 +1492,7 @@ export function ProfilePage() {
     file: File,
   ) {
     setProfilePictureMessage("");
+
     setProfilePictureError("");
 
     try {
@@ -1511,7 +1539,9 @@ export function ProfilePage() {
     }
 
     setIsApplyingPicture(true);
+
     setProfilePictureError("");
+
     setProfilePictureMessage("");
 
     try {
@@ -1590,6 +1620,7 @@ export function ProfilePage() {
 
       context.imageSmoothingEnabled =
         true;
+
       context.imageSmoothingQuality =
         "high";
 
@@ -1645,8 +1676,11 @@ export function ProfilePage() {
         revokePictureEditorUrl();
 
         setPictureEditor(null);
+
         setIsPictureEditorOpen(false);
+
         setIsDraggingPicture(false);
+
         pictureDragRef.current = null;
       }
     } catch (error) {
@@ -1676,8 +1710,11 @@ export function ProfilePage() {
 
   function handleOpenCamera() {
     setProfilePictureMessage("");
+
     setProfilePictureError("");
+
     setCameraError("");
+
     setIsCameraOpen(true);
   }
 
@@ -1687,7 +1724,9 @@ export function ProfilePage() {
     }
 
     stopCameraStream();
+
     setIsCameraOpen(false);
+
     setCameraError("");
   }
 
@@ -1704,11 +1743,14 @@ export function ProfilePage() {
       setCameraError(
         "The camera is still starting. Please wait a moment and try again.",
       );
+
       return;
     }
 
     setCameraError("");
+
     setProfilePictureError("");
+
     setIsCapturing(true);
 
     try {
@@ -1791,7 +1833,9 @@ export function ProfilePage() {
       );
 
       stopCameraStream();
+
       setIsCameraOpen(false);
+
       setCameraError("");
 
       openPictureEditor(file);
@@ -1838,6 +1882,7 @@ export function ProfilePage() {
     }
 
     setProfilePictureMessage("");
+
     setProfilePictureError("");
 
     try {
@@ -1877,6 +1922,7 @@ export function ProfilePage() {
     event.preventDefault();
 
     setProfileMessage("");
+
     setProfileError("");
 
     const socialLinks =
@@ -1888,30 +1934,75 @@ export function ProfilePage() {
       setProfileError(
         "Social links must be valid JSON containing an object.",
       );
+
       return;
     }
+
+    const originalEmail =
+      profile.email.trim();
+
+    const submittedEmail =
+      form.email.trim();
+
+    const emailChanged =
+      submittedEmail.toLowerCase() !==
+      originalEmail.toLowerCase();
 
     try {
       const updatedProfile =
         await updateProfileMutation.mutateAsync({
           payload: {
             username: form.username.trim(),
-            email: form.email.trim(),
+
+            email: submittedEmail,
+
             first_name:
               form.first_name.trim(),
+
             last_name:
               form.last_name.trim(),
+
             phone_number:
               form.phone_number.trim() ||
               null,
+
             bio:
               form.bio.trim() || null,
+
             address:
               form.address.trim() || null,
+
             social_links:
               socialLinks,
           },
         });
+
+      if (emailChanged) {
+        /*
+         * The backend invalidates the existing session when
+         * the account email changes and requires the new email
+         * to be verified again.
+         *
+         * This redirect is intentionally handled only here,
+         * because the user explicitly changed their email from
+         * the profile page. Normal logout and other auth failures
+         * continue to use their existing /sign-in behavior.
+         */
+        navigate(
+          "/verification-required",
+          {
+            replace: true,
+            state: {
+              email: submittedEmail,
+            },
+            flushSync: true,
+          },
+        );
+
+        logout();
+
+        return;
+      }
 
       setForm(
         createFormState(
@@ -1949,12 +2040,24 @@ export function ProfilePage() {
     }
   }
 
+  function handleLogout() {
+    logout();
+
+    navigate(
+      "/sign-in",
+      {
+        replace: true,
+      },
+    );
+  }
+
   async function handlePrivacySubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
 
     setPrivacyMessage("");
+
     setPrivacyError("");
 
     const payload: ProfilePrivacyUpdatePayload =
@@ -1988,7 +2091,9 @@ export function ProfilePage() {
     );
 
     setProfileError("");
+
     setProfileMessage("");
+
     setIsEditing(false);
   }
 
@@ -2217,6 +2322,14 @@ export function ProfilePage() {
                 >
                   Edit profile
                 </button>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-300/30 bg-red-500/15 px-5 text-sm font-bold text-red-100 transition hover:bg-red-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
+                >
+                  Log out
+                </button>
               </div>
             </div>
 
@@ -2247,25 +2360,25 @@ export function ProfilePage() {
           <StatCard
             label="Items posted"
             value={statistics.posted}
-            description="All reports you've submitted"
+            description="All posts you've submitted"
           />
 
           <StatCard
             label="Lost"
             value={statistics.lost}
-            description="Lost-item reports"
+            description="Lost-item posts"
           />
 
           <StatCard
             label="Found"
             value={statistics.found}
-            description="Found-item reports"
+            description="Found-item posts"
           />
 
           <StatCard
             label="Claimed"
             value={statistics.claimed}
-            description="Your reports marked claimed"
+            description="Your posts marked claimed"
           />
 
           <StatCard
@@ -2301,11 +2414,11 @@ export function ProfilePage() {
               </p>
 
               <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-[var(--trackit-navy)]">
-                Reports and claims
+                Posts and claims
               </h2>
 
               <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--trackit-text-muted)]">
-                Keep track of the lost and found reports you've submitted and the claims you've made.
+                Keep track of the lost and found posts you've submitted and the claims you've made.
               </p>
             </div>
           </div>
@@ -2455,23 +2568,23 @@ export function ProfilePage() {
               <p className="mt-2 text-sm leading-7 text-[var(--trackit-text-muted)]">
                 {activityFilter ===
                 "all"
-                  ? "Your lost and found reports will appear here after you submit them."
-                  : "Try another activity filter or report a new item."}
+                  ? "Your lost and found posts will appear here after you submit them."
+                  : "Try another activity filter or post a new item."}
               </p>
 
               <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
                 <Link
-                  to="/items/report-lost"
+                  to="/items/post-lost"
                   className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white hover:bg-[var(--trackit-blue-hover)]"
                 >
-                  Report lost item
+                  Post lost item
                 </Link>
 
                 <Link
-                  to="/items/report-found"
+                  to="/items/post-found"
                   className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] hover:border-[var(--trackit-blue)]"
                 >
-                  Report found item
+                  Post found item
                 </Link>
               </div>
             </div>
@@ -3340,4 +3453,3 @@ export function ProfilePage() {
     </main>
   );
 }
-

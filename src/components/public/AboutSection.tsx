@@ -4,7 +4,7 @@ const principles = [
   {
     title: "Structured",
     description:
-      "Important item details are organized into reports instead of being scattered across unrelated posts.",
+      "Important item details are organized into posts instead of being scattered across unrelated posts.",
   },
   {
     title: "Community-focused",
@@ -34,13 +34,13 @@ export function AboutSection() {
 
             <p className="mt-5 text-base leading-8 text-[var(--trackit-text-muted)] sm:text-lg">
               TrackIt is a lost-and-found platform built around a simple idea:
-              make it easier to report belongings, discover relevant items,
+              make it easier to post belongings, discover relevant items,
               verify ownership, and coordinate toward a responsible return.
             </p>
 
             <p className="mt-4 text-base leading-8 text-[var(--trackit-text-muted)] sm:text-lg">
               Instead of treating lost-and-found as a collection of
-              disconnected conversations, TrackIt gives each report a
+              disconnected conversations, TrackIt gives each post a
               structured place in the process.
             </p>
 

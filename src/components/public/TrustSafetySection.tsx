@@ -4,7 +4,7 @@ const safetyPoints = [
   {
     title: "Share only what helps",
     description:
-      "Item reports should contain useful identifying information without unnecessarily exposing private or sensitive details.",
+      "Item posts should contain useful identifying information without unnecessarily exposing private or sensitive details.",
   },
   {
     title: "Verify before returning",
@@ -34,7 +34,7 @@ export function TrustSafetySection() {
 
             <p className="mt-5 text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
               Finding a belonging is only part of the process. TrackIt is
-              structured around careful reporting, ownership verification, and
+              structured around careful posting, ownership verification, and
               responsible communication.
             </p>
 

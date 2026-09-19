@@ -16,7 +16,7 @@ export function LostFoundSection() {
           <p className="mt-5 text-base leading-8 text-[var(--trackit-text-muted)] sm:text-lg">
             Whether something disappeared from your hands or you discovered
             someone else&apos;s belonging, TrackIt gives you a structured way
-            to report what happened and help move it toward a safe return.
+            to post what happened and help move it toward a safe return.
           </p>
         </div>
 
@@ -24,28 +24,28 @@ export function LostFoundSection() {
           <LostFoundCard
             eyebrow="Lost item"
             title="Something is missing."
-            description="Create a detailed lost-item report with the information that can help others recognize it without exposing unnecessary private details."
+            description="Create a detailed lost-item post with the information that can help others recognize it without exposing unnecessary private details."
             points={[
               "Describe the item and where it was last seen.",
               "Add useful identifying details and media.",
               "Monitor possible matches and claims.",
             ]}
-            actionLabel="Report a lost item"
-            actionTo="/items/report-lost"
+            actionLabel="Post a lost item"
+            actionTo="/items/post-lost"
             variant="dark"
           />
 
           <LostFoundCard
             eyebrow="Found item"
             title="You found something."
-            description="Report a found belonging so its owner has a structured place to discover it and begin a safe verification process."
+            description="Post a found belonging so its owner has a structured place to discover it and begin a safe verification process."
             points={[
               "Describe where and when it was found.",
               "Add identifying details and supporting media.",
               "Review ownership claims through TrackIt.",
             ]}
-            actionLabel="Report a found item"
-            actionTo="/items/report-found"
+            actionLabel="Post a found item"
+            actionTo="/items/post-found"
             variant="light"
           />
         </div>

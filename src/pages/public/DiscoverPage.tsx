@@ -76,11 +76,11 @@ export function DiscoverPage() {
             </p>
 
             <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Find reports that may help bring something home.
+              Find posts that may help bring something home.
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
-              Explore approved lost and found reports. Use the search and
+              Explore approved lost and found posts. Use the search and
               filters to narrow the results and review the details of each
               item.
             </p>
@@ -96,7 +96,7 @@ export function DiscoverPage() {
           >
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
-                Search reports
+                Search posts
               </p>
 
               <h2
@@ -134,7 +134,7 @@ export function DiscoverPage() {
                   type="submit"
                   className="min-h-12 w-full rounded-xl bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 lg:w-auto"
                 >
-                  Search reports
+                  Search posts
                 </button>
               </div>
             </form>
@@ -145,7 +145,7 @@ export function DiscoverPage() {
                   htmlFor="discovery-type"
                   className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
                 >
-                  Report type
+                  Post type
                 </label>
 
                 <select
@@ -156,7 +156,7 @@ export function DiscoverPage() {
                   }
                   className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
                 >
-                  <option value="">All reports</option>
+                  <option value="">All posts</option>
                   <option value="lost">Lost items</option>
                   <option value="found">Found items</option>
                 </select>
@@ -228,7 +228,7 @@ export function DiscoverPage() {
                   id="discovery-results-heading"
                   className="mt-2 text-3xl font-extrabold text-[var(--trackit-navy)]"
                 >
-                  Public item reports
+                  Public item posts
                 </h2>
               </div>
 
@@ -248,7 +248,7 @@ export function DiscoverPage() {
             ) : isError ? (
               <div className="mt-7 rounded-3xl border border-red-200 bg-red-50 px-6 py-10 text-center">
                 <h3 className="text-lg font-bold text-red-900">
-                  We couldn't load the reports
+                  We couldn't load the posts
                 </h3>
 
                 <p className="mt-2 text-sm leading-7 text-red-800">
@@ -266,7 +266,7 @@ export function DiscoverPage() {
             ) : items.length === 0 ? (
               <div className="mt-7 rounded-3xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-6 py-12 text-center">
                 <h3 className="text-lg font-bold text-[var(--trackit-navy)]">
-                  No matching reports found
+                  No matching posts found
                 </h3>
 
                 <p className="mt-2 text-sm leading-7 text-[var(--trackit-text-muted)]">

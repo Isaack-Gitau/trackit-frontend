@@ -28,10 +28,14 @@ import { LandingPage } from "./pages/public/LandingPage";
 import { PrivacyPage } from "./pages/public/PrivacyPage";
 import { ItemDetailsPage } from "./pages/public/ItemDetailsPage";
 import { PublicProfilePage } from "./pages/public/PublicProfilePage";
-import { ProfilePage } from "./pages/app/ProfilePage";
-import { SettingsPage } from "./pages/app/SettingsPage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
+
+import { DashboardPage } from "./pages/app/DashboardPage";
+import { ProfilePage } from "./pages/app/ProfilePage";
+import { SettingsPage } from "./pages/app/SettingsPage";
+import { MyItemsPage } from "./pages/app/MyItemsPage";
+
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -160,19 +164,19 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/dashboard",
-            element: <PlaceholderPage title="Dashboard" />,
+            element: <DashboardPage />,
           },
           {
             path: "/items",
-            element: <PlaceholderPage title="My items" />,
+            element: <MyItemsPage />,
           },
           {
-            path: "/items/report-lost",
-            element: <PlaceholderPage title="Report lost item" />,
+            path: "/items/post-lost",
+            element: <PlaceholderPage title="Post lost item" />,
           },
           {
-            path: "/items/report-found",
-            element: <PlaceholderPage title="Report found item" />,
+            path: "/items/post-found",
+            element: <PlaceholderPage title="Post found item" />,
           },
           {
             path: "/claims",

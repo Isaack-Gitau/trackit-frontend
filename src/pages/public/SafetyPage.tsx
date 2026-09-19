@@ -5,7 +5,7 @@ const principles = [
     number: "01",
     title: "Share only what helps",
     description:
-      "Include enough information to identify and manage a report, but avoid publishing unnecessary personal or sensitive information.",
+      "Include enough information to identify and manage a post, but avoid publishing unnecessary personal or sensitive information.",
   },
   {
     number: "02",
@@ -107,7 +107,7 @@ export function SafetyPage() {
 
               <p className="mt-4 text-base leading-8 text-[var(--trackit-text-muted)]">
                 Lost-and-found interactions involve real belongings and real
-                people. These principles help keep reports useful while
+                people. These principles help keep posts useful while
                 reducing unnecessary exposure and confusion.
               </p>
             </div>

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 const steps = [
   {
     number: "01",
-    title: "Report",
+    title: "Post",
     description:
-      "Create a structured lost or found item report with the details that help TrackIt understand what happened.",
+      "Create a structured lost or found item post with the details that help TrackIt understand what happened.",
     details: [
       "Describe the item clearly.",
       "Add relevant dates and locations.",
@@ -16,7 +16,7 @@ const steps = [
     number: "02",
     title: "Discover",
     description:
-      "Use organized reports to identify items that may be connected to what you lost or found.",
+      "Use organized posts to identify items that may be connected to what you lost or found.",
     details: [
       "Review relevant item information.",
       "Compare meaningful details rather than relying on a single similarity.",
@@ -73,7 +73,7 @@ export function HowItWorksPage() {
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
               TrackIt organizes the journey around four connected stages:
-              reporting an item, discovering relevant reports, verifying
+              posting an item, discovering relevant posts, verifying
               ownership, and working toward a responsible return.
             </p>
           </div>
@@ -93,7 +93,7 @@ export function HowItWorksPage() {
               </h2>
 
               <p className="mt-4 text-base leading-8 text-[var(--trackit-text-muted)]">
-                Each stage has a different purpose. Reporting creates useful
+                Each stage has a different purpose. Posting creates useful
                 information, discovery helps identify possibilities,
                 verification helps establish ownership, and the return stage
                 focuses on getting the item back responsibly.
@@ -185,7 +185,7 @@ export function HowItWorksPage() {
 
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[var(--trackit-text-on-dark)]">
               Create your TrackIt account to access the platform and begin
-              reporting, discovering, and managing your lost-and-found
+              posting, discovering, and managing your lost-and-found
               activity.
             </p>
 

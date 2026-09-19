@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 const steps = [
   {
     number: "01",
-    title: "Report",
+    title: "Post",
     description:
       "Describe what was lost or found with useful details such as location, time, category, and identifying information.",
-    to: "/items/report-lost",
-    linkLabel: "Report an item",
+    to: "/items/post-lost",
+    linkLabel: "Post an item",
   },
   {
     number: "02",
     title: "Discover",
     description:
-      "Browse and search relevant reports to see whether an item matching yours has already been reported.",
+      "Browse and search relevant posts to see whether an item matching yours has already been posted.",
     to: "/discover",
-    linkLabel: "Explore reports",
+    linkLabel: "Explore posts",
   },
   {
     number: "03",
@@ -51,7 +51,7 @@ export function ProcessSection() {
 
             <p className="mt-5 text-base font-semibold leading-8 text-[var(--trackit-text-muted)] sm:text-lg">
               TrackIt organizes the journey around four practical steps,
-              helping people move from a report to a potential return without
+              helping people move from a post to a potential return without
               relying on scattered posts or guesswork.
             </p>
 

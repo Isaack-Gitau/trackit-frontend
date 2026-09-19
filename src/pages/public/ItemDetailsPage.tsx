@@ -499,7 +499,7 @@ export function ItemDetailsPage() {
           <aside className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
-                About this report
+                About this post
               </p>
 
               <h2 className="mt-2 text-2xl font-extrabold text-[var(--trackit-navy)]">
@@ -586,7 +586,7 @@ export function ItemDetailsPage() {
                     rows={4}
                     maxLength={2000}
                     disabled={isCommentSubmitting}
-                    placeholder="Share information that may help with this report..."
+                    placeholder="Share information that may help with this post..."
                     className="mt-3 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none transition placeholder:text-[var(--trackit-text-muted)] focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:bg-[var(--trackit-surface-blue)]"
                   />
 
@@ -699,7 +699,7 @@ export function ItemDetailsPage() {
 
                 <p className="mt-2 text-sm leading-6 text-[var(--trackit-text-muted)]">
                   Be the first to share useful information about
-                  this report.
+                  this post.
                 </p>
               </div>
             ) : (

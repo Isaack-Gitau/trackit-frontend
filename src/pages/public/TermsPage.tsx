@@ -5,7 +5,7 @@ const termsSections = [
     number: "01",
     title: "Using TrackIt",
     description:
-      "TrackIt provides a structured platform for reporting lost and found items, discovering relevant reports, submitting claims, and communicating around potential returns.",
+      "TrackIt provides a structured platform for posting lost and found items, discovering relevant posts, submitting claims, and communicating around potential returns.",
     points: [
       "Use TrackIt only for legitimate lost-and-found activity.",
       "Provide information that is accurate and not intentionally misleading.",
@@ -14,13 +14,13 @@ const termsSections = [
   },
   {
     number: "02",
-    title: "Reports and item information",
+    title: "Posts and item information",
     description:
-      "Reports help other users understand what has been lost or found. The information you submit can affect other people's decisions, so it should be provided carefully.",
+      "Posts help other users understand what has been lost or found. The information you submit can affect other people's decisions, so it should be provided carefully.",
     points: [
-      "Do not knowingly submit false, fraudulent, or misleading item reports.",
+      "Do not knowingly submit false, fraudulent, or misleading item posts.",
       "Only include information that is appropriate to share on the platform.",
-      "Do not use reports to publish passwords, financial information, identification numbers, or other unnecessary sensitive information.",
+      "Do not use posts to publish passwords, financial information, identification numbers, or other unnecessary sensitive information.",
     ],
   },
   {
@@ -49,9 +49,9 @@ const termsSections = [
     number: "05",
     title: "Moderation and platform decisions",
     description:
-      "TrackIt may use moderation and administrative processes to protect users, review reports, manage claims, and respond to activity that may violate platform rules.",
+      "TrackIt may use moderation and administrative processes to protect users, review posts, manage claims, and respond to activity that may violate platform rules.",
     points: [
-      "Reports, claims, comments, and other activity may be reviewed where platform management requires it.",
+      "Posts, claims, comments, and other activity may be reviewed where platform management requires it.",
       "TrackIt may restrict or deactivate accounts when platform rules or security requirements require action.",
       "Administrative and moderation decisions may be recorded as part of maintaining platform accountability and security.",
     ],
@@ -73,7 +73,7 @@ const responsibilities = [
   {
     title: "Be accurate",
     description:
-      "Give truthful information when creating reports, claims, comments, and other platform activity.",
+      "Give truthful information when creating posts, claims, comments, and other platform activity.",
   },
   {
     title: "Respect others",
@@ -100,6 +100,7 @@ export function TermsPage() {
           aria-hidden="true"
           className="absolute -right-32 top-[-10rem] h-96 w-96 rounded-full bg-[var(--trackit-blue)]/20 blur-3xl"
         />
+
         <div
           aria-hidden="true"
           className="absolute left-[-12rem] top-20 h-[32rem] w-[32rem] rounded-full bg-[var(--trackit-blue-bright)]/10 blur-3xl"
@@ -137,7 +138,7 @@ export function TermsPage() {
               </h2>
 
               <p className="mt-5 text-base leading-8 text-[var(--trackit-text-muted)]">
-                TrackIt is intended to help people report lost and found
+                TrackIt is intended to help people post lost and found
                 property and work toward legitimate returns. Using the
                 platform means accepting the responsibility to provide
                 truthful information, respect other users, and follow the
@@ -152,7 +153,7 @@ export function TermsPage() {
                   className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <div className="flex gap-5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-dark-card)] text-sm font-extrabold text-[var(--trackit-dark-card-text)]">
                       {section.number}
                     </div>
 
@@ -175,6 +176,7 @@ export function TermsPage() {
                               aria-hidden="true"
                               className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--trackit-blue)]"
                             />
+
                             <span>{point}</span>
                           </li>
                         ))}
@@ -242,8 +244,8 @@ export function TermsPage() {
               </p>
             </div>
 
-            <div className="rounded-3xl bg-[var(--trackit-navy)] p-6 shadow-xl sm:p-8">
-              <p className="text-base leading-8 !text-[var(--trackit-text-on-dark)]">
+            <div className="rounded-3xl bg-[var(--trackit-dark-card)] p-6 shadow-xl sm:p-8">
+              <p className="text-base leading-8 text-[var(--trackit-dark-card-muted)]">
                 TrackIt can help structure the process, but users should make
                 sensible decisions about personal information, communication,
                 verification, and meeting arrangements.
@@ -251,7 +253,7 @@ export function TermsPage() {
 
               <Link
                 to="/safety"
-                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Review Safety Guidance
               </Link>

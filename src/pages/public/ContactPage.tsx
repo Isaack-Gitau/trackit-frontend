@@ -7,9 +7,9 @@ const contactTopics = [
       "Get help with account access, email verification, password recovery, or an account that has become inactive.",
   },
   {
-    title: "Report or claim support",
+    title: "Post or claim support",
     description:
-      "Ask for help when you are having trouble with a lost or found item report, claim, or related workflow.",
+      "Ask for help when you are having trouble with a lost or found item post, claim, or related workflow.",
   },
   {
     title: "Safety concerns",
@@ -48,7 +48,7 @@ export function ContactPage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 !text-[var(--trackit-text-on-dark)] sm:text-lg">
-              Reach out when you need assistance with an account, report,
+              Reach out when you need assistance with an account, post,
               claim, safety concern, or general question about the platform.
             </p>
           </div>
@@ -115,7 +115,7 @@ export function ContactPage() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] bg-[var(--trackit-navy)] p-6 shadow-xl sm:p-8">
+            <div className="rounded-[2rem] bg-[var(--trackit-dark-card)] p-6 shadow-xl sm:p-8">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
                 What can we help with?
               </p>
@@ -166,7 +166,7 @@ export function ContactPage() {
 
               <GuidanceCard
                 title="Include useful context"
-                description="If a report or claim is involved, provide the relevant reference information when available."
+                description="If a post or claim is involved, provide the relevant reference information when available."
               />
 
               <GuidanceCard

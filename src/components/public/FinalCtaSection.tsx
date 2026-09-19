@@ -25,24 +25,24 @@ export function FinalCtaSection() {
             </h2>
 
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 !text-[var(--trackit-dark-card-muted)] sm:text-lg">
-              Create a structured report and use TrackIt&apos;s discovery and
+              Create a structured post and use TrackIt&apos;s discovery and
               verification process to help move belongings toward the right
               people.
             </p>
 
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
-                to="/items/report-lost"
+                to="/items/post-lost"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
-                Report a lost item
+                Post a lost item
               </Link>
 
               <Link
-                to="/items/report-found"
+                to="/items/post-found"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue-dark)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
-                Report a found item
+                Post a found item
               </Link>
             </div>
           </div>

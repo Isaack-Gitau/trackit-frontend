@@ -7,7 +7,7 @@ const helpSections = [
       {
         question: "How do I start using TrackIt?",
         answer:
-          "Create a TrackIt account and complete the required account verification steps. Once your account is ready, you can report items, discover relevant reports, manage claims, and use the other features available to your account.",
+          "Create a TrackIt account and complete the required account verification steps. Once your account is ready, you can post items, discover relevant posts, manage claims, and use the other features available to your account.",
       },
       {
         question: "Why do I need to verify my email?",
@@ -22,22 +22,22 @@ const helpSections = [
     ],
   },
   {
-    title: "Lost and found reports",
+    title: "Lost and found posts",
     items: [
       {
-        question: "How do I report a lost item?",
+        question: "How do I post a lost item?",
         answer:
-          "Use the lost-item reporting flow and provide clear information about the item, when it was lost, and where relevant. Useful photos and identifying details can make a report more informative.",
+          "Use the lost-item posting flow and provide clear information about the item, when it was lost, and where relevant. Useful photos and identifying details can make a post more informative.",
       },
       {
-        question: "How do I report something I found?",
+        question: "How do I post something I found?",
         answer:
           "Use the found-item reporting flow and provide useful information about what you found and the circumstances surrounding it. Avoid publishing sensitive information that could unnecessarily expose you or another person.",
       },
       {
-        question: "Can I update information in my report?",
+        question: "Can I update information in my post?",
         answer:
-          "TrackIt provides item-management workflows for reports. The exact actions available can depend on the item's current status and your permissions.",
+          "TrackIt provides item-management workflows for posts. The exact actions available can depend on the item's current status and your permissions.",
       },
     ],
   },
@@ -77,7 +77,7 @@ const helpSections = [
       {
         question: "Where can I read more safety guidance?",
         answer:
-          "Visit the TrackIt Safety page for practical guidance about reports, claims, verification, communication, and returns.",
+          "Visit the TrackIt Safety page for practical guidance about posts, claims, verification, communication, and returns.",
       },
     ],
   },
@@ -108,7 +108,7 @@ export function HelpPage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 !text-[var(--trackit-text-on-dark)] sm:text-lg">
-              Get practical guidance about accounts, lost and found reports,
+              Get practical guidance about accounts, lost and found posts,
               claims, verification, communication, and safety.
             </p>
           </div>
@@ -184,7 +184,7 @@ export function HelpPage() {
               </p>
             </div>
 
-            <div className="rounded-3xl bg-[var(--trackit-navy)] p-6 shadow-xl sm:p-8">
+            <div className="rounded-3xl bg-[var(--trackit-dark-card)] p-6 shadow-xl sm:p-8">
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--trackit-blue-bright)]">
                 Support
               </p>
@@ -193,14 +193,14 @@ export function HelpPage() {
                 Contact TrackIt
               </h3>
 
-              <p className="mt-3 text-sm leading-7 !text-[var(--trackit-text-on-dark)]">
+              <p className="mt-3 text-sm leading-7 !text-[var(--trackit-dark-card-muted)]">
                 Reach us through the available support channels for account,
                 report, claim, or safety-related assistance.
               </p>
 
               <Link
                 to="/contact"
-                className="mt-6 inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="mt-6 inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Contact TrackIt
               </Link>

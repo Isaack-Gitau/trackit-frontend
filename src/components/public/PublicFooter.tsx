@@ -8,8 +8,8 @@ const exploreLinks = [
 ];
 
 const communityLinks = [
-  { label: "Report a lost item", to: "/items/report-lost" },
-  { label: "Report a found item", to: "/items/report-found" },
+  { label: "Post a lost item", to: "/items/post-lost" },
+  { label: "Post a found item", to: "/items/post-found" },
   { label: "Help", to: "/help" },
   { label: "Contact", to: "/contact" },
 ];
@@ -35,7 +35,7 @@ export function PublicFooter() {
             </Link>
 
             <p className="mt-4 max-w-sm text-sm leading-7 text-[var(--trackit-text-on-dark)]">
-              A trusted lost-and-found platform designed to help people report,
+              A trusted lost-and-found platform designed to help people post,
               discover, verify, and return belongings safely.
             </p>
 
@@ -62,7 +62,7 @@ export function PublicFooter() {
               </h2>
 
               <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--trackit-text-on-dark)]">
-                Need help with a report, claim, account, or safety concern?
+                Need help with a post, claim, account, or safety concern?
                 Reach us through the support channels below.
               </p>
             </div>

@@ -24,11 +24,11 @@ export function DiscoverySection() {
             </p>
 
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Search reports without sorting through scattered posts.
+              Search posts without sorting through scattered posts.
             </h2>
 
             <p className="mt-5 text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
-              TrackIt is designed around structured item reports, making it
+              TrackIt is designed around structured item posts, making it
               easier to describe, discover, and compare the details that can
               help identify a missing belonging.
             </p>
@@ -38,14 +38,14 @@ export function DiscoverySection() {
                 to="/discover"
                 className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-deep-navy)]"
               >
-                Explore reports
+                Explore posts
               </Link>
 
               <Link
-                to="/items/report-lost"
+                to="/items/post-lost"
                 className="inline-flex min-h-11 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-5 text-sm font-bold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-deep-navy)]"
               >
-                Report something lost
+                Post something lost
               </Link>
             </div>
           </div>
@@ -58,7 +58,7 @@ export function DiscoverySection() {
                 </p>
 
                 <h3 className="mt-1 text-lg font-bold text-white">
-                  Recent item reports
+                  Recent item posts
                 </h3>
               </div>
 
@@ -77,13 +77,13 @@ export function DiscoverySection() {
                 </div>
               ) : isError ? (
                 <DiscoveryMessage>
-                  We couldn't load recent reports right now. Please try again
+                  We couldn't load recent posts right now. Please try again
                   from the Discover page.
                 </DiscoveryMessage>
               ) : items.length === 0 ? (
                 <DiscoveryMessage>
-                  There are no public item reports available yet. New approved
-                  reports will appear here.
+                  There are no public item posts available yet. New approved
+                  posts will appear here.
                 </DiscoveryMessage>
               ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -151,7 +151,7 @@ export function DiscoverySection() {
             {!isLoading && !isError && items.length > 0 && (
               <div className="mt-5 rounded-xl border border-dashed border-white/15 px-4 py-4 text-center">
                 <p className="text-sm text-[var(--trackit-text-on-dark)]">
-                  Browse all public reports and use search and filters to
+                  Browse all public posts and use search and filters to
                   narrow your results.
                 </p>
               </div>

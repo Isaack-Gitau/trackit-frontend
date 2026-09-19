@@ -5,11 +5,11 @@ const privacySections = [
     number: "01",
     title: "Information you provide",
     description:
-      "When you use TrackIt, you may provide information needed to create and manage your account, reports, claims, profile, and other platform activity.",
+      "When you use TrackIt, you may provide information needed to create and manage your account, posts, claims, profile, and other platform activity.",
     points: [
       "Account information such as your name, email address, and authentication details.",
-      "Information included in lost and found item reports.",
-      "Information submitted as part of claims, comments, reports, or support requests.",
+      "Information included in lost and found item posts.",
+      "Information submitted as part of claims, comments, posts, or support requests.",
     ],
   },
   {
@@ -40,7 +40,7 @@ const privacySections = [
     description:
       "TrackIt is designed to avoid unnecessarily exposing personal information. Information may be visible to other users where that visibility is part of a platform feature or necessary for an interaction.",
     points: [
-      "Only share information in reports that is appropriate for the situation.",
+      "Only share information in posts that is appropriate for the situation.",
       "Avoid publishing passwords, financial information, identification numbers, or unnecessary private details.",
       "Use the platform's available privacy and account controls where applicable.",
     ],
@@ -61,7 +61,7 @@ const userRights = [
   {
     title: "Control what you share",
     description:
-      "Think carefully about the information included in public-facing reports and communication.",
+      "Think carefully about the information included in public-facing posts and communication.",
   },
   {
     title: "Ask for help",
@@ -117,7 +117,7 @@ export function PrivacyPage() {
 
               <p className="mt-5 text-base leading-8 text-[var(--trackit-text-muted)]">
                 TrackIt needs certain information to provide accounts, item
-                reports, claims, notifications, moderation, security, and
+                posts, claims, notifications, moderation, security, and
                 support. The goal is to use information for legitimate platform
                 purposes while avoiding unnecessary exposure.
               </p>
@@ -130,7 +130,7 @@ export function PrivacyPage() {
                   className="rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 shadow-sm sm:p-8"
                 >
                   <div className="flex gap-5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-navy)] text-sm font-extrabold text-white">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--trackit-dark-card)] text-sm font-extrabold text-[var(--trackit-dark-card-text)]">
                       {section.number}
                     </div>
 
@@ -179,7 +179,7 @@ export function PrivacyPage() {
 
               <p className="mt-5 text-base leading-8 text-[var(--trackit-text-muted)]">
                 TrackIt can provide controls and safeguards, but users should
-                also consider whether information belongs in a report,
+                also consider whether information belongs in a post,
                 comment, claim, or conversation before submitting it.
               </p>
             </div>
@@ -211,12 +211,12 @@ export function PrivacyPage() {
               </p>
 
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-[var(--trackit-navy)] sm:text-4xl">
-                Protect the account that protects your reports.
+                Protect the account that protects your posts.
               </h2>
             </div>
 
-            <div className="rounded-3xl bg-[var(--trackit-navy)] p-6 shadow-xl sm:p-8">
-              <p className="text-base leading-8 !text-[var(--trackit-text-on-dark)]">
+            <div className="rounded-3xl bg-[var(--trackit-dark-card)] p-6 shadow-xl sm:p-8">
+              <p className="text-base leading-8 !text-[var(--trackit-dark-card-muted)]">
                 Keep your password private, use account recovery tools when
                 necessary, and contact TrackIt support if you believe someone
                 else may have accessed your account.
@@ -224,7 +224,7 @@ export function PrivacyPage() {
 
               <Link
                 to="/safety"
-                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-navy)]"
+                className="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold !text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-dark-card)]"
               >
                 Review Safety Guidance
               </Link>

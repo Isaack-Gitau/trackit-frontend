@@ -223,7 +223,7 @@ export function RegisterPage() {
               </h1>
 
               <p className="mt-6 text-base leading-8 text-[var(--trackit-text-on-dark)]">
-                Join TrackIt to report lost or found items, follow
+                Join TrackIt to post lost or found items, follow
                 claims, discover possible matches, and stay informed
                 throughout the return process.
               </p>
@@ -591,7 +591,7 @@ export function RegisterPage() {
 
             <p className="mt-8 text-center text-xs leading-5 text-[var(--trackit-text-muted)]">
               TrackIt requires account registration so that users can
-              securely report items, submit claims, and communicate
+              securely post items, submit claims, and communicate
               during the return process.
             </p>
           </div>

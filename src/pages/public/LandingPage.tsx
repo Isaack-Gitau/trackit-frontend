@@ -31,29 +31,29 @@ export function LandingPage() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
-              Report lost and found belongings, discover relevant reports,
+              Post lost and found belongings, discover relevant posts,
               verify ownership, and move toward a safe return through one
               structured platform.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
-                to="/items/report-lost"
+                to="/items/post-lost"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white shadow-lg shadow-black/20 transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-midnight)]"
               >
-                Report a lost item
+                Post a lost item
               </Link>
 
               <Link
-                to="/items/report-found"
+                to="/items/post-found"
                 className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-sm font-bold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--trackit-midnight)]"
               >
-                Report a found item
+                Post a found item
               </Link>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm text-[var(--trackit-text-on-dark)]">
-              <span>Structured reports</span>
+              <span>Structured posts</span>
               <span>Ownership verification</span>
               <span>Safer returns</span>
             </div>
@@ -80,14 +80,14 @@ export function LandingPage() {
               <div className="mt-6 space-y-4">
                 <EvidenceCard
                   number="01"
-                  title="Report"
+                  title="Post"
                   description="Record the important details about what was lost or found."
                 />
 
                 <EvidenceCard
                   number="02"
                   title="Discover"
-                  description="Use structured reports to identify relevant possibilities."
+                  description="Use structured posts to identify relevant possibilities."
                 />
 
                 <EvidenceCard
