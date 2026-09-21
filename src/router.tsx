@@ -31,11 +31,11 @@ import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
 
+import { ClaimsPage } from "./pages/app/ClaimsPage";
 import { DashboardPage } from "./pages/app/DashboardPage";
+import { MyItemsPage } from "./pages/app/MyItemsPage";
 import { ProfilePage } from "./pages/app/ProfilePage";
 import { SettingsPage } from "./pages/app/SettingsPage";
-import { MyItemsPage } from "./pages/app/MyItemsPage";
-
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -180,7 +180,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/claims",
-            element: <PlaceholderPage title="Claims" />,
+            element: <ClaimsPage />,
           },
           {
             path: "/matches",

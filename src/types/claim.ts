@@ -4,10 +4,20 @@ export type ClaimStatus =
   | "rejected"
   | "withdrawn";
 
+export type ClaimItemSummary = {
+  id: number;
+  title: string;
+  type: "lost" | "found";
+  category: string;
+  location: string;
+  image: string | null;
+};
+
 export type Claim = {
   id: number;
   item_id: number;
   claimant_id: number;
+  item: ClaimItemSummary;
   reason: string;
   status: ClaimStatus;
   rejection_reason: string | null;
