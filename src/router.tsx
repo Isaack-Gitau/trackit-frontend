@@ -34,6 +34,7 @@ import { TermsPage } from "./pages/public/TermsPage";
 import { ClaimsPage } from "./pages/app/ClaimsPage";
 import { DashboardPage } from "./pages/app/DashboardPage";
 import { MyItemsPage } from "./pages/app/MyItemsPage";
+import { NotificationsPage } from "./pages/app/NotificationsPage";
 import { ProfilePage } from "./pages/app/ProfilePage";
 import { SettingsPage } from "./pages/app/SettingsPage";
 
@@ -188,7 +189,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/notifications",
-            element: <PlaceholderPage title="Notifications" />,
+            element: <NotificationsPage />,
           },
           {
             path: "/profile",

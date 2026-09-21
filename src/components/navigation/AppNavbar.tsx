@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
+import { useUnreadNotificationCount } from "../../hooks/useNotifications";
 import { Button } from "../ui/Button";
 
 const navigation = [
@@ -18,10 +19,36 @@ const accountNavigation = [
   { label: "Settings", to: "/settings" },
 ];
 
+function NotificationNavLabel({
+  unreadCount,
+}: {
+  unreadCount: number;
+}) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span>Notifications</span>
+
+      {unreadCount > 0 ? (
+        <span
+          aria-label={`${unreadCount} unread notifications`}
+          className="inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--trackit-blue)] px-1.5 py-0.5 text-[11px] font-extrabold leading-none !text-white"
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 export function AppNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { accessToken, user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const { data: unreadCountData } =
+    useUnreadNotificationCount(accessToken);
+
+  const unreadCount = unreadCountData?.unread_count ?? 0;
 
   const closeMenu = () => {
     setIsMenuOpen(false);
@@ -66,7 +93,11 @@ export function AppNavbar() {
                 ].join(" ")
               }
             >
-              {item.label}
+              {item.to === "/notifications" ? (
+                <NotificationNavLabel unreadCount={unreadCount} />
+              ) : (
+                item.label
+              )}
             </NavLink>
           ))}
         </nav>
@@ -114,7 +145,9 @@ export function AppNavbar() {
           <button
             type="button"
             aria-label={
-              isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+              isMenuOpen
+                ? "Close navigation menu"
+                : "Open navigation menu"
             }
             aria-expanded={isMenuOpen}
             aria-controls="app-mobile-navigation"
@@ -176,7 +209,13 @@ export function AppNavbar() {
                       ].join(" ")
                     }
                   >
-                    {item.label}
+                    {item.to === "/notifications" ? (
+                      <NotificationNavLabel
+                        unreadCount={unreadCount}
+                      />
+                    ) : (
+                      item.label
+                    )}
                   </NavLink>
                 ))}
 
