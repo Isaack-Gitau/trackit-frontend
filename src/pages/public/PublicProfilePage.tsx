@@ -23,11 +23,20 @@ function getProfileImageUrl(
     return profilePicture;
   }
 
-  const normalizedPath = profilePicture.startsWith("/")
-    ? profilePicture
-    : `/${profilePicture}`;
+  const normalizedPath = profilePicture.replace(/^\/+/, "");
 
-  return `${API_BASE_URL}${normalizedPath}`;
+  if (normalizedPath.startsWith("media/")) {
+    return `${API_BASE_URL}/${normalizedPath}`;
+  }
+
+  if (
+    normalizedPath.startsWith("profiles/") ||
+    normalizedPath.startsWith("items/")
+  ) {
+    return `${API_BASE_URL}/media/${normalizedPath}`;
+  }
+
+  return `${API_BASE_URL}/${normalizedPath}`;
 }
 
 function getDisplayName(

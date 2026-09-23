@@ -19,14 +19,14 @@ import { SignInPage } from "./pages/auth/SignInPage";
 import { VerificationRequiredPage } from "./pages/auth/VerificationRequiredPage";
 import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
 
+import { DiscoverRoute } from "./pages/DiscoverRoute";
 import { AboutPage } from "./pages/public/AboutPage";
 import { ContactPage } from "./pages/public/ContactPage";
-import { DiscoverPage } from "./pages/public/DiscoverPage";
 import { HelpPage } from "./pages/public/HelpPage";
 import { HowItWorksPage } from "./pages/public/HowItWorksPage";
+import { ItemDetailsPage } from "./pages/public/ItemDetailsPage";
 import { LandingPage } from "./pages/public/LandingPage";
 import { PrivacyPage } from "./pages/public/PrivacyPage";
-import { ItemDetailsPage } from "./pages/public/ItemDetailsPage";
 import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
@@ -34,7 +34,10 @@ import { TermsPage } from "./pages/public/TermsPage";
 import { ClaimsPage } from "./pages/app/ClaimsPage";
 import { DashboardPage } from "./pages/app/DashboardPage";
 import { MyItemsPage } from "./pages/app/MyItemsPage";
+import { MatchesPage } from "./pages/app/MatchesPage";
 import { NotificationsPage } from "./pages/app/NotificationsPage";
+import { ReportsPage } from "./pages/app/ReportsPage";
+import { PostItemPage } from "./pages/app/PostItemPage";
 import { ProfilePage } from "./pages/app/ProfilePage";
 import { SettingsPage } from "./pages/app/SettingsPage";
 
@@ -60,15 +63,16 @@ function PlaceholderPage({ title }: { title: string }) {
 
 export const router = createBrowserRouter([
   {
+    path: "/discover",
+    element: <DiscoverRoute />,
+  },
+
+  {
     element: <PublicLayout />,
     children: [
       {
         path: "/",
         element: <LandingPage />,
-      },
-      {
-        path: "/discover",
-        element: <DiscoverPage />,
       },
       {
         path: "/items/:itemId",
@@ -173,11 +177,11 @@ export const router = createBrowserRouter([
           },
           {
             path: "/items/post-lost",
-            element: <PlaceholderPage title="Post lost item" />,
+            element: <PostItemPage type="lost" />,
           },
           {
             path: "/items/post-found",
-            element: <PlaceholderPage title="Post found item" />,
+            element: <PostItemPage type="found" />,
           },
           {
             path: "/claims",
@@ -185,11 +189,15 @@ export const router = createBrowserRouter([
           },
           {
             path: "/matches",
-            element: <PlaceholderPage title="Matches" />,
+            element: <MatchesPage />,
           },
           {
             path: "/notifications",
             element: <NotificationsPage />,
+          },
+          {
+            path: "/reports",
+            element: <ReportsPage />,
           },
           {
             path: "/profile",

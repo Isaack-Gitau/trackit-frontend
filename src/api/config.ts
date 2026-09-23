@@ -18,3 +18,26 @@ if (
 }
 
 export const API_BASE_URL = apiBaseUrl;
+
+export function getMediaUrl(
+  mediaPath: string | null | undefined,
+): string | null {
+  if (!mediaPath) {
+    return null;
+  }
+
+  const normalizedPath = mediaPath.trim();
+
+  if (!normalizedPath) {
+    return null;
+  }
+
+  if (
+    normalizedPath.startsWith("http://") ||
+    normalizedPath.startsWith("https://")
+  ) {
+    return normalizedPath;
+  }
+
+  return `${API_BASE_URL}/${normalizedPath.replace(/^\/+/, "")}`;
+}

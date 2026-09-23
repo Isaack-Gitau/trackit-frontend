@@ -28,7 +28,17 @@ function getImageUrl(image: string | null): string | null {
     return image;
   }
 
-  return image.startsWith("/") ? image : `/${image}`;
+  const apiBaseUrl = (
+    import.meta.env.VITE_API_BASE_URL ?? ""
+  ).replace(/\/+$/, "");
+
+  const normalizedImage = image.replace(/^\/+/, "");
+
+  if (normalizedImage.startsWith("media/")) {
+    return `${apiBaseUrl}/${normalizedImage}`;
+  }
+
+  return `${apiBaseUrl}/media/${normalizedImage}`;
 }
 
 function formatDate(value: string): string {

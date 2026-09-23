@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 import { useUnreadNotificationCount } from "../../hooks/useNotifications";
 import { Button } from "../ui/Button";
 
 const navigation = [
-  { label: "Dashboard", to: "/dashboard" },
   { label: "Discover", to: "/discover" },
+  { label: "Dashboard", to: "/dashboard" },
+  { label: "Post", to: "/items/post-lost" },
   { label: "My Items", to: "/items" },
   { label: "Claims", to: "/claims" },
   { label: "Matches", to: "/matches" },
-  { label: "Notifications", to: "/notifications" },
+  { label: "Reports", to: "/reports" },
 ];
 
 const accountNavigation = [
@@ -19,13 +25,61 @@ const accountNavigation = [
   { label: "Settings", to: "/settings" },
 ];
 
-function NotificationNavLabel({
+function NotificationBell({
+  unreadCount,
+}: {
+  unreadCount: number;
+}) {
+  const hasUnread = unreadCount > 0;
+
+  return (
+    <Link
+      to="/notifications"
+      aria-label={
+        hasUnread
+          ? `${unreadCount} unread notifications`
+          : "Notifications"
+      }
+      className={[
+        "relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg",
+        "text-[var(--trackit-navy)] transition-colors",
+        "hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]",
+      ].join(" ")}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-5 w-5"
+        aria-hidden="true"
+      >
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+        <path d="M10 21h4" />
+      </svg>
+
+      {hasUnread ? (
+        <span
+          aria-hidden="true"
+          className="absolute right-1 top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[var(--trackit-blue)] px-1 text-[10px] font-extrabold leading-none !text-white ring-2 ring-[var(--trackit-surface)]"
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
+
+function MobileNotificationNavLabel({
   unreadCount,
 }: {
   unreadCount: number;
 }) {
   return (
-    <span className="inline-flex items-center gap-2">
+    <span className="flex items-center justify-between gap-3">
       <span>Notifications</span>
 
       {unreadCount > 0 ? (
@@ -40,10 +94,31 @@ function NotificationNavLabel({
   );
 }
 
+function isNavigationItemActive(
+  itemTo: string,
+  pathname: string,
+): boolean {
+  if (itemTo === "/items/post-lost") {
+    return (
+      pathname === "/items/post-lost" ||
+      pathname === "/items/post-found" ||
+      pathname.startsWith("/items/post-lost/") ||
+      pathname.startsWith("/items/post-found/")
+    );
+  }
+
+  if (itemTo === "/items") {
+    return pathname === "/items";
+  }
+
+  return pathname === itemTo || pathname.startsWith(`${itemTo}/`);
+}
+
 export function AppNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { accessToken, user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { data: unreadCountData } =
     useUnreadNotificationCount(accessToken);
@@ -64,9 +139,9 @@ export function AppNavbar() {
     <header className="sticky top-0 z-50 border-b border-[var(--trackit-border)] bg-[var(--trackit-surface)]/95 shadow-sm backdrop-blur-md">
       <div className="mx-auto flex min-h-16 w-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-6 lg:min-h-[72px] lg:px-8">
         <Link
-          to="/dashboard"
+          to="/discover"
           onClick={closeMenu}
-          aria-label="TrackIt dashboard"
+          aria-label="TrackIt Discover"
           className="flex min-h-11 shrink-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
         >
           <span className="text-xl font-extrabold tracking-tight text-[var(--trackit-navy)] sm:text-2xl">
@@ -83,26 +158,33 @@ export function AppNavbar() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) =>
-                [
+              end={item.to === "/items"}
+              className={({ isActive }) => {
+                const active =
+                  isNavigationItemActive(
+                    item.to,
+                    location.pathname,
+                  ) || isActive;
+
+                return [
                   "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]",
-                  isActive
+                  active
                     ? "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue)]"
                     : "text-[var(--trackit-text-muted)] hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue)]",
-                ].join(" ")
-              }
+                ].join(" ");
+              }}
             >
-              {item.to === "/notifications" ? (
-                <NotificationNavLabel unreadCount={unreadCount} />
-              ) : (
-                item.label
-              )}
+              {item.label}
             </NavLink>
           ))}
         </nav>
 
         <div className="hidden items-center gap-2 xl:flex">
+          <NotificationBell unreadCount={unreadCount} />
+
+          <div className="mx-1 h-8 w-px bg-[var(--trackit-border)]" />
+
           {accountNavigation.map((item) => (
             <NavLink
               key={item.to}
@@ -198,26 +280,45 @@ export function AppNavbar() {
                   <NavLink
                     key={item.to}
                     to={item.to}
+                    end={item.to === "/items"}
                     onClick={closeMenu}
-                    className={({ isActive }) =>
-                      [
+                    className={({ isActive }) => {
+                      const active =
+                        isNavigationItemActive(
+                          item.to,
+                          location.pathname,
+                        ) || isActive;
+
+                      return [
                         "rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
                         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]",
-                        isActive
+                        active
                           ? "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue)]"
                           : "text-[var(--trackit-text)] hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue)]",
-                      ].join(" ")
-                    }
+                      ].join(" ");
+                    }}
                   >
-                    {item.to === "/notifications" ? (
-                      <NotificationNavLabel
-                        unreadCount={unreadCount}
-                      />
-                    ) : (
-                      item.label
-                    )}
+                    {item.label}
                   </NavLink>
                 ))}
+
+                <NavLink
+                  to="/notifications"
+                  onClick={closeMenu}
+                  className={({ isActive }) =>
+                    [
+                      "rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]",
+                      isActive
+                        ? "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue)]"
+                        : "text-[var(--trackit-text)] hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue)]",
+                    ].join(" ")
+                  }
+                >
+                  <MobileNotificationNavLabel
+                    unreadCount={unreadCount}
+                  />
+                </NavLink>
 
                 <div className="mt-2 border-t border-[var(--trackit-border)] pt-2">
                   {accountNavigation.map((item) => (

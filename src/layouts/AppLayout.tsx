@@ -1,10 +1,17 @@
+import type { ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 
 import { AppNavbar } from "../components/navigation/AppNavbar";
 import { BackToTop } from "../components/navigation/BackToTop";
 import { ScrollToTop } from "../components/navigation/ScrollToTop";
 
-export function AppLayout() {
+type AppLayoutProps = {
+  children?: ReactNode;
+};
+
+export function AppLayout({
+  children,
+}: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-[var(--trackit-surface)] text-[var(--trackit-text)]">
       <ScrollToTop />
@@ -12,7 +19,7 @@ export function AppLayout() {
       <AppNavbar />
 
       <main>
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
 
       <BackToTop />

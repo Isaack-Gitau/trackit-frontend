@@ -28,3 +28,13 @@ export type PublicItemFilters = {
   page?: number;
   limit?: number;
 };
+
+export type CreateItemPayload = {
+  title: string;
+  description: string;
+  type: ItemType;
+  category: string;
+  location: string;
+  image?: File | null;
+};
+

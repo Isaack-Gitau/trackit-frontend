@@ -1,6 +1,7 @@
 import { apiRequest } from "./client";
 
 import type {
+  CreateItemPayload,
   Item,
   PublicItemFilters,
 } from "../types/item";
@@ -80,6 +81,34 @@ export async function getMyItems(
   return apiRequest<Item[]>({
     method: "GET",
     path: "/api/items/me/items",
+    accessToken,
+    signal: options?.signal,
+  });
+}
+
+export async function createItem(
+  payload: CreateItemPayload,
+  accessToken: string,
+  options?: {
+    signal?: AbortSignal;
+  },
+): Promise<Item> {
+  const formData = new FormData();
+
+  formData.append("title", payload.title);
+  formData.append("description", payload.description);
+  formData.append("type", payload.type);
+  formData.append("category", payload.category);
+  formData.append("location", payload.location);
+
+  if (payload.image) {
+    formData.append("image", payload.image);
+  }
+
+  return apiRequest<Item>({
+    method: "POST",
+    path: "/api/items",
+    body: formData,
     accessToken,
     signal: options?.signal,
   });

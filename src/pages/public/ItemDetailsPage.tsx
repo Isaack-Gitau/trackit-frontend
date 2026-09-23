@@ -11,6 +11,7 @@ import {
 
 import { API_BASE_URL } from "../../api/config";
 import { getApiErrorMessage } from "../../api/errors";
+import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../context/AuthContext";
 import {
   useCreateItemComment,
@@ -18,6 +19,7 @@ import {
   useUpdateComment,
 } from "../../hooks/useItemCommentMutations";
 import { useItemComments } from "../../hooks/useItemComments";
+import { useCreateReport } from "../../hooks/useReports";
 import { usePublicItem } from "../../hooks/usePublicItem";
 
 function getImageUrl(
@@ -104,6 +106,14 @@ export function ItemDetailsPage() {
   const [commentActionError, setCommentActionError] =
     useState("");
 
+  const [reportReason, setReportReason] = useState("");
+  const [reportDescription, setReportDescription] =
+    useState("");
+  const [reportActionError, setReportActionError] =
+    useState("");
+  const [reportSubmitted, setReportSubmitted] =
+    useState(false);
+
   const parsedItemId = itemId ? Number(itemId) : NaN;
 
   const validItemId =
@@ -142,6 +152,9 @@ export function ItemDetailsPage() {
       validItemId,
       accessToken,
     );
+
+  const createReportMutation =
+    useCreateReport(accessToken);
 
   function handleSignIn() {
     navigate("/sign-in", {
@@ -287,6 +300,88 @@ export function ItemDetailsPage() {
     );
   }
 
+  function handleReportSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
+
+    const reason = reportReason.trim();
+    const description = reportDescription.trim();
+
+    if (!reason || reason.length < 3) {
+      setReportActionError(
+        "Enter a report reason of at least 3 characters.",
+      );
+      return;
+    }
+
+    if (reason.length > 100) {
+      setReportActionError(
+        "The report reason cannot exceed 100 characters.",
+      );
+      return;
+    }
+
+    if (!description || description.length < 10) {
+      setReportActionError(
+        "Provide at least 10 characters describing the issue.",
+      );
+      return;
+    }
+
+    if (description.length > 5000) {
+      setReportActionError(
+        "The report description cannot exceed 5000 characters.",
+      );
+      return;
+    }
+
+    if (!isAuthenticated || !accessToken) {
+      handleSignIn();
+      return;
+    }
+
+    if (!user?.is_verified) {
+      navigate("/verification-required");
+      return;
+    }
+
+    if (!item) {
+      return;
+    }
+
+    if (item.user_id === user.id) {
+      setReportActionError(
+        "You cannot report your own post.",
+      );
+      return;
+    }
+
+    setReportActionError("");
+
+    createReportMutation.mutate(
+      {
+        itemId: item.id,
+        payload: {
+          reason,
+          description,
+        },
+      },
+      {
+        onSuccess: () => {
+          setReportReason("");
+          setReportDescription("");
+          setReportSubmitted(true);
+        },
+        onError: (error) => {
+          setReportActionError(
+            getApiErrorMessage(error),
+          );
+        },
+      },
+    );
+  }
+
   if (isItemLoading) {
     return (
       <main className="min-h-[70vh] bg-[var(--trackit-surface)] px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
@@ -376,6 +471,12 @@ export function ItemDetailsPage() {
   const isCommentDeleting =
     deleteCommentMutation.isPending;
 
+  const isReportSubmitting =
+    createReportMutation.isPending;
+
+  const isOwnItem =
+    Boolean(user && user.id === item.user_id);
+
   return (
     <main className="min-h-[70vh] bg-[var(--trackit-surface)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
       <div className="mx-auto w-full max-w-6xl">
@@ -457,7 +558,7 @@ export function ItemDetailsPage() {
 
                 <div>
                   <dt className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--trackit-text-muted)]">
-                    Reported
+                    Posted
                   </dt>
 
                   <dd className="mt-1 font-semibold text-[var(--trackit-navy)]">
@@ -480,14 +581,14 @@ export function ItemDetailsPage() {
 
               <section className="mt-8 border-t border-[var(--trackit-border)] pt-8">
                 <h2 className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
-                  Reported by
+                  Posted by
                 </h2>
 
                 <Link
                   to={`/users/${item.user_id}`}
                   className="mt-4 inline-flex min-h-12 items-center rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm font-bold !text-[var(--trackit-navy)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-blue-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
                 >
-                  View reporter profile
+                  View poster profile
                   <span className="ml-2 !text-[var(--trackit-blue)]">
                     →
                   </span>
@@ -531,6 +632,180 @@ export function ItemDetailsPage() {
             >
               Read TrackIt safety guidance →
             </Link>
+
+            {!isOwnItem ? (
+              <section className="mt-7 border-t border-[var(--trackit-border)] pt-7">
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
+                  Report this post
+                </p>
+
+                <h2 className="mt-2 text-xl font-extrabold text-[var(--trackit-navy)]">
+                  Something doesn't look right?
+                </h2>
+
+                <p className="mt-3 text-sm leading-6 text-[var(--trackit-text-muted)]">
+                  Report concerns about this post to the TrackIt
+                  administrative team. Please provide clear,
+                  factual information.
+                </p>
+
+                {reportSubmitted ? (
+                  <div
+                    role="status"
+                    className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"
+                  >
+                    <p className="font-bold text-emerald-900">
+                      Report submitted
+                    </p>
+
+                    <p className="mt-2 text-sm leading-6 text-emerald-800">
+                      Your report has been submitted for administrative
+                      review. You can follow its status from My Reports.
+                    </p>
+
+                    <Link
+                      to="/reports"
+                      className="mt-4 inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-bold !text-emerald-800 transition hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                    >
+                      View my reports →
+                    </Link>
+                  </div>
+                ) : !isAuthenticated ? (
+                  <div className="mt-5 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5">
+                    <p className="font-bold text-[var(--trackit-navy)]">
+                      Sign in to report a post
+                    </p>
+
+                    <p className="mt-2 text-sm leading-6 text-[var(--trackit-text-muted)]">
+                      You need a TrackIt account to submit and
+                      follow a report.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={handleSignIn}
+                      className="mt-4 inline-flex min-h-10 items-center rounded-xl bg-[var(--trackit-blue)] px-4 text-sm font-bold text-white transition hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+                    >
+                      Sign in to report
+                    </button>
+                  </div>
+                ) : !user?.is_verified ? (
+                  <div className="mt-5 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5">
+                    <p className="font-bold text-[var(--trackit-navy)]">
+                      Verify your account to report
+                    </p>
+
+                    <p className="mt-2 text-sm leading-6 text-[var(--trackit-text-muted)]">
+                      Your TrackIt account must be verified before
+                      you can submit a report.
+                    </p>
+
+                    <Link
+                      to="/verification-required"
+                      className="mt-4 inline-flex min-h-10 items-center rounded-xl bg-[var(--trackit-blue)] px-4 text-sm font-bold !text-white transition hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+                    >
+                      Verify your account
+                    </Link>
+                  </div>
+                ) : (
+                  <form
+                    onSubmit={handleReportSubmit}
+                    className="mt-5 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5"
+                  >
+                    <div>
+                      <label
+                        htmlFor="report-reason"
+                        className="block text-sm font-bold text-[var(--trackit-navy)]"
+                      >
+                        Reason
+                      </label>
+
+                      <input
+                        id="report-reason"
+                        name="reason"
+                        type="text"
+                        value={reportReason}
+                        onChange={(event) => {
+                          setReportReason(event.target.value);
+                          setReportActionError("");
+                        }}
+                        maxLength={100}
+                        disabled={isReportSubmitting}
+                        placeholder="e.g. Misleading information"
+                        className="mt-2 min-h-11 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm text-[var(--trackit-navy)] outline-none transition placeholder:text-[var(--trackit-text-muted)] focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+
+                      <p className="mt-1 text-xs text-[var(--trackit-text-muted)]">
+                        {reportReason.length}/100
+                      </p>
+                    </div>
+
+                    <div className="mt-4">
+                      <label
+                        htmlFor="report-description"
+                        className="block text-sm font-bold text-[var(--trackit-navy)]"
+                      >
+                        What is the concern?
+                      </label>
+
+                      <textarea
+                        id="report-description"
+                        name="description"
+                        value={reportDescription}
+                        onChange={(event) => {
+                          setReportDescription(
+                            event.target.value,
+                          );
+                          setReportActionError("");
+                        }}
+                        rows={5}
+                        maxLength={5000}
+                        disabled={isReportSubmitting}
+                        placeholder="Explain what you noticed and why you believe it needs administrative attention."
+                        className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 text-sm leading-6 text-[var(--trackit-navy)] outline-none transition placeholder:text-[var(--trackit-text-muted)] focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                      />
+
+                      <p className="mt-1 text-xs text-[var(--trackit-text-muted)]">
+                        {reportDescription.length}/5000
+                      </p>
+                    </div>
+
+                    {reportActionError ? (
+                      <div
+                        role="alert"
+                        className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-800"
+                      >
+                        {reportActionError}
+                      </div>
+                    ) : null}
+
+                    <div className="mt-5 flex flex-col gap-3">
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        size="sm"
+                        loading={isReportSubmitting}
+                        disabled={
+                          !reportReason.trim() ||
+                          !reportDescription.trim()
+                        }
+                        fullWidth
+                      >
+                        {isReportSubmitting
+                          ? "Submitting report..."
+                          : "Submit report"}
+                      </Button>
+
+                      <p className="text-xs leading-5 text-[var(--trackit-text-muted)]">
+                        Reports are reviewed through TrackIt's
+                        administrative workflow. Submitting a report
+                        does not automatically remove the post.
+                      </p>
+                    </div>
+                  </form>
+                )}
+              </section>
+            ) : null}
           </aside>
         </div>
 

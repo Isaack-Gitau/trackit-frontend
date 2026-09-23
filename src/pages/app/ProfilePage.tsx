@@ -2040,17 +2040,6 @@ export function ProfilePage() {
     }
   }
 
-  function handleLogout() {
-    logout();
-
-    navigate(
-      "/sign-in",
-      {
-        replace: true,
-      },
-    );
-  }
-
   async function handlePrivacySubmit(
     event: FormEvent<HTMLFormElement>,
   ) {
@@ -2323,13 +2312,6 @@ export function ProfilePage() {
                   Edit profile
                 </button>
 
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="inline-flex min-h-11 items-center justify-center rounded-xl border border-red-300/30 bg-red-500/15 px-5 text-sm font-bold text-red-100 transition hover:bg-red-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
-                >
-                  Log out
-                </button>
               </div>
             </div>
 

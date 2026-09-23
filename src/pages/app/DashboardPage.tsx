@@ -1,22 +1,46 @@
 import { Link } from "react-router-dom";
 
 import { Button } from "../../components/ui/Button";
+import { Skeleton } from "../../components/ui/Skeleton";
+
 import { useAuth } from "../../context/AuthContext";
+
 import { useMyClaims } from "../../hooks/useMyClaims";
 import { useMyItems } from "../../hooks/useMyItems";
 import { useProfile } from "../../hooks/useProfile";
-import type { Claim } from "../../types/claim";
-import type { Item, ItemStatus } from "../../types/item";
-import type { Profile } from "../../types/profile";
 
-function getDisplayName(profile: Profile | undefined, username?: string): string {
-  if (!profile) {
-    return username || "there";
+import type { Claim } from "../../types/claim";
+import type { ItemStatus } from "../../types/item";
+
+function getDisplayName(
+  username?: string,
+): string {
+  return username || "there";
+}
+
+function getImageUrl(image: string | null): string | null {
+  if (!image) {
+    return null;
   }
 
-  const fullName = `${profile.first_name} ${profile.last_name}`.trim();
+  if (
+    image.startsWith("http://") ||
+    image.startsWith("https://")
+  ) {
+    return image;
+  }
 
-  return fullName || profile.username || username || "there";
+  const apiBaseUrl = (
+    import.meta.env.VITE_API_BASE_URL ?? ""
+  ).replace(/\/+$/, "");
+
+  const normalizedImage = image.replace(/^\/+/, "");
+
+  if (normalizedImage.startsWith("media/")) {
+    return `${apiBaseUrl}/${normalizedImage}`;
+  }
+
+  return `${apiBaseUrl}/media/${normalizedImage}`;
 }
 
 function formatDate(value: string): string {
@@ -37,12 +61,16 @@ function getItemStatusLabel(status: ItemStatus): string {
   switch (status) {
     case "pending":
       return "Pending review";
+
     case "approved":
       return "Approved";
+
     case "rejected":
       return "Rejected";
+
     case "claimed":
       return "Claimed";
+
     default:
       return status;
   }
@@ -52,12 +80,16 @@ function getItemStatusClasses(status: ItemStatus): string {
   switch (status) {
     case "pending":
       return "bg-[var(--trackit-warning-soft)] text-[var(--trackit-warning)]";
+
     case "approved":
       return "bg-[var(--trackit-success-soft)] text-[var(--trackit-success)]";
+
     case "rejected":
       return "bg-[var(--trackit-danger-soft)] text-[var(--trackit-danger-text)]";
+
     case "claimed":
       return "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue-dark)]";
+
     default:
       return "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue-dark)]";
   }
@@ -67,12 +99,16 @@ function getClaimStatusLabel(status: Claim["status"]): string {
   switch (status) {
     case "pending":
       return "Pending review";
+
     case "approved":
       return "Approved";
+
     case "rejected":
       return "Rejected";
+
     case "withdrawn":
       return "Withdrawn";
+
     default:
       return status;
   }
@@ -82,12 +118,16 @@ function getClaimStatusClasses(status: Claim["status"]): string {
   switch (status) {
     case "pending":
       return "bg-[var(--trackit-warning-soft)] text-[var(--trackit-warning)]";
+
     case "approved":
       return "bg-[var(--trackit-success-soft)] text-[var(--trackit-success)]";
+
     case "rejected":
       return "bg-[var(--trackit-danger-soft)] text-[var(--trackit-danger-text)]";
+
     case "withdrawn":
       return "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue-dark)]";
+
     default:
       return "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue-dark)]";
   }
@@ -97,10 +137,12 @@ function StatCard({
   label,
   value,
   description,
+  isLoading = false,
 }: {
   label: string;
   value: number;
   description: string;
+  isLoading?: boolean;
 }) {
   return (
     <article className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm">
@@ -108,13 +150,22 @@ function StatCard({
         {label}
       </p>
 
-      <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--trackit-navy)]">
-        {value}
-      </p>
+      {isLoading ? (
+        <>
+          <Skeleton className="mt-2 h-9 w-16 rounded-lg" />
+          <Skeleton className="mt-2 h-4 w-32 rounded" />
+        </>
+      ) : (
+        <>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-[var(--trackit-navy)]">
+            {value}
+          </p>
 
-      <p className="mt-1 text-sm leading-5 text-[var(--trackit-text-muted)]">
-        {description}
-      </p>
+          <p className="mt-1 text-sm leading-5 text-[var(--trackit-text-muted)]">
+            {description}
+          </p>
+        </>
+      )}
     </article>
   );
 }
@@ -148,11 +199,48 @@ function SectionHeader({
           className="inline-flex min-h-10 items-center rounded-lg px-2 text-sm font-semibold text-[var(--trackit-blue)] hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
         >
           {linkLabel}
+
           <span className="ml-1" aria-hidden="true">
             →
           </span>
         </Link>
       ) : null}
+    </div>
+  );
+}
+
+function RecentItemSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm">
+      <div className="flex min-h-32">
+        <Skeleton className="w-32 shrink-0 rounded-none" />
+
+        <div className="min-w-0 flex-1 p-4">
+          <div className="flex gap-2">
+            <Skeleton className="h-6 w-14 rounded-full" />
+            <Skeleton className="h-6 w-24 rounded-full" />
+          </div>
+
+          <Skeleton className="mt-3 h-5 w-3/4 rounded" />
+
+          <Skeleton className="mt-2 h-4 w-2/3 rounded" />
+
+          <Skeleton className="mt-3 h-3 w-24 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecentClaimSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0">
+        <Skeleton className="h-5 w-24 rounded" />
+        <Skeleton className="mt-2 h-4 w-52 rounded" />
+      </div>
+
+      <Skeleton className="h-6 w-28 rounded-full" />
     </div>
   );
 }
@@ -164,19 +252,29 @@ export function DashboardPage() {
   const itemsQuery = useMyItems(accessToken);
   const claimsQuery = useMyClaims(accessToken);
 
-  const profile = profileQuery.data;
   const items = itemsQuery.data ?? [];
   const claims = claimsQuery.data ?? [];
 
-  const displayName = getDisplayName(profile, user?.username);
+  const displayName = getDisplayName(
+    user?.username,
+  );
 
-  const lostItems = items.filter((item) => item.type === "lost");
-  const foundItems = items.filter((item) => item.type === "found");
-  const claimedItems = items.filter((item) => item.status === "claimed");
+  const lostItems = items.filter(
+    (item) => item.type === "lost",
+  );
+
+  const foundItems = items.filter(
+    (item) => item.type === "found",
+  );
+
+  const claimedItems = items.filter(
+    (item) => item.status === "claimed",
+  );
 
   const pendingItems = items.filter(
     (item) => item.status === "pending",
   );
+
   const rejectedItems = items.filter(
     (item) => item.status === "rejected",
   );
@@ -184,6 +282,7 @@ export function DashboardPage() {
   const pendingClaims = claims.filter(
     (claim) => claim.status === "pending",
   );
+
   const rejectedClaims = claims.filter(
     (claim) => claim.status === "rejected",
   );
@@ -225,7 +324,7 @@ export function DashboardPage() {
               </p>
 
               <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                Welcome back, {user?.username || "there"}.
+                Welcome back, {displayName}.
               </h1>
 
               <p className="mt-4 text-base leading-7 text-[var(--trackit-text-on-dark)]">
@@ -255,7 +354,10 @@ export function DashboardPage() {
           </div>
         </header>
 
-        <section className="mt-8" aria-labelledby="quick-actions-heading">
+        <section
+          className="mt-8"
+          aria-labelledby="quick-actions-heading"
+        >
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[var(--trackit-blue)]">
@@ -325,7 +427,10 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="mt-10" aria-labelledby="activity-heading">
+        <section
+          className="mt-10"
+          aria-labelledby="activity-heading"
+        >
           <SectionHeader
             eyebrow="Your activity"
             title="A quick look at your posts"
@@ -338,29 +443,36 @@ export function DashboardPage() {
               label="Total posts"
               value={items.length}
               description="All items you have posted"
+              isLoading={isLoading}
             />
 
             <StatCard
               label="Lost"
               value={lostItems.length}
               description="Items you posted as lost"
+              isLoading={isLoading}
             />
 
             <StatCard
               label="Found"
               value={foundItems.length}
               description="Items you posted as found"
+              isLoading={isLoading}
             />
 
             <StatCard
               label="Claimed"
               value={claimedItems.length}
               description="Your posts marked as claimed"
+              isLoading={isLoading}
             />
           </div>
         </section>
 
-        <section className="mt-10" aria-labelledby="attention-heading">
+        <section
+          className="mt-10"
+          aria-labelledby="attention-heading"
+        >
           <SectionHeader
             eyebrow="Next steps"
             title="Needs your attention"
@@ -381,7 +493,8 @@ export function DashboardPage() {
                 </div>
 
                 <span className="flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--trackit-blue-soft)] px-3 text-sm font-bold text-[var(--trackit-blue-dark)]">
-                  {pendingItems.length + rejectedItems.length}
+                  {pendingItems.length +
+                    rejectedItems.length}
                 </span>
               </div>
 
@@ -393,8 +506,10 @@ export function DashboardPage() {
                   >
                     <span className="text-[var(--trackit-navy)]">
                       {pendingItems.length} post
-                      {pendingItems.length === 1 ? "" : "s"} pending
-                      review
+                      {pendingItems.length === 1
+                        ? ""
+                        : "s"}{" "}
+                      pending review
                     </span>
 
                     <span className="font-semibold text-[var(--trackit-blue)]">
@@ -410,7 +525,10 @@ export function DashboardPage() {
                   >
                     <span className="text-[var(--trackit-danger-text)]">
                       {rejectedItems.length} post
-                      {rejectedItems.length === 1 ? "" : "s"} rejected
+                      {rejectedItems.length === 1
+                        ? ""
+                        : "s"}{" "}
+                      rejected
                     </span>
 
                     <span className="font-semibold text-[var(--trackit-danger-text)]">
@@ -442,7 +560,8 @@ export function DashboardPage() {
                 </div>
 
                 <span className="flex h-10 min-w-10 items-center justify-center rounded-full bg-[var(--trackit-blue-soft)] px-3 text-sm font-bold text-[var(--trackit-blue-dark)]">
-                  {pendingClaims.length + rejectedClaims.length}
+                  {pendingClaims.length +
+                    rejectedClaims.length}
                 </span>
               </div>
 
@@ -454,8 +573,10 @@ export function DashboardPage() {
                   >
                     <span className="text-[var(--trackit-navy)]">
                       {pendingClaims.length} claim
-                      {pendingClaims.length === 1 ? "" : "s"} pending
-                      review
+                      {pendingClaims.length === 1
+                        ? ""
+                        : "s"}{" "}
+                      pending review
                     </span>
 
                     <span className="font-semibold text-[var(--trackit-blue)]">
@@ -471,7 +592,10 @@ export function DashboardPage() {
                   >
                     <span className="text-[var(--trackit-danger-text)]">
                       {rejectedClaims.length} claim
-                      {rejectedClaims.length === 1 ? "" : "s"} rejected
+                      {rejectedClaims.length === 1
+                        ? ""
+                        : "s"}{" "}
+                      rejected
                     </span>
 
                     <span className="font-semibold text-[var(--trackit-danger-text)]">
@@ -491,7 +615,10 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <section className="mt-10" aria-labelledby="recent-items-heading">
+        <section
+          className="mt-10"
+          aria-labelledby="recent-items-heading"
+        >
           <SectionHeader
             eyebrow="Your posts"
             title="Recent items"
@@ -501,16 +628,18 @@ export function DashboardPage() {
 
           <div className="mt-5">
             {isLoading ? (
-              <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 text-sm text-[var(--trackit-text-muted)] shadow-sm">
-                Loading your recent items…
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <RecentItemSkeleton key={index} />
+                ))}
               </div>
             ) : hasError && itemsQuery.isError ? (
               <div
                 role="alert"
                 className="rounded-2xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] p-6 text-sm leading-6 text-[var(--trackit-danger-text)]"
               >
-                We could not load your recent items right now. Please
-                try again shortly.
+                We could not load your recent items right now.
+                Please try again shortly.
               </div>
             ) : recentItems.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-8 text-center shadow-sm">
@@ -544,64 +673,75 @@ export function DashboardPage() {
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
-                {recentItems.map((item) => (
-                  <Link
-                    key={item.id}
-                    to={`/items/${item.id}`}
-                    className="group overflow-hidden rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
-                  >
-                    <div className="flex min-h-32">
-                      <div className="flex w-32 shrink-0 items-center justify-center bg-[var(--trackit-surface-blue)]">
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt=""
-                            className="h-full min-h-32 w-full object-cover"
-                          />
-                        ) : (
-                          <span
-                            aria-hidden="true"
-                            className="text-3xl text-[var(--trackit-blue)]"
-                          >
-                            {item.type === "lost" ? "?" : "✓"}
-                          </span>
-                        )}
-                      </div>
+                {recentItems.map((item) => {
+                  const imageUrl = getImageUrl(item.image);
 
-                      <div className="min-w-0 flex-1 p-4">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-[var(--trackit-blue-soft)] px-2.5 py-1 text-xs font-semibold capitalize text-[var(--trackit-blue-dark)]">
-                            {item.type}
-                          </span>
-
-                          <span
-                            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getItemStatusClasses(item.status)}`}
-                          >
-                            {getItemStatusLabel(item.status)}
-                          </span>
+                  return (
+                    <Link
+                      key={item.id}
+                      to={`/items/${item.id}`}
+                      className="group overflow-hidden rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--trackit-blue)] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+                    >
+                      <div className="flex min-h-32">
+                        <div className="flex w-32 shrink-0 items-center justify-center bg-[var(--trackit-surface-blue)]">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.title}
+                              className="h-full min-h-32 w-full object-cover"
+                            />
+                          ) : (
+                            <span
+                              aria-hidden="true"
+                              className="text-3xl text-[var(--trackit-blue)]"
+                            >
+                              {item.type === "lost"
+                                ? "?"
+                                : "✓"}
+                            </span>
+                          )}
                         </div>
 
-                        <h3 className="mt-3 line-clamp-2 font-bold text-[var(--trackit-navy)] group-hover:text-[var(--trackit-blue)]">
-                          {item.title}
-                        </h3>
+                        <div className="min-w-0 flex-1 p-4">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-[var(--trackit-blue-soft)] px-2.5 py-1 text-xs font-semibold capitalize text-[var(--trackit-blue-dark)]">
+                              {item.type}
+                            </span>
 
-                        <p className="mt-1 truncate text-sm text-[var(--trackit-text-muted)]">
-                          {item.location}
-                        </p>
+                            <span
+                              className={`rounded-full px-2.5 py-1 text-xs font-semibold ${getItemStatusClasses(item.status)}`}
+                            >
+                              {getItemStatusLabel(
+                                item.status,
+                              )}
+                            </span>
+                          </div>
 
-                        <p className="mt-2 text-xs text-[var(--trackit-text-muted)]">
-                          {formatDate(item.created_at)}
-                        </p>
+                          <h3 className="mt-3 line-clamp-2 font-bold text-[var(--trackit-navy)] group-hover:text-[var(--trackit-blue)]">
+                            {item.title}
+                          </h3>
+
+                          <p className="mt-1 truncate text-sm text-[var(--trackit-text-muted)]">
+                            {item.location}
+                          </p>
+
+                          <p className="mt-2 text-xs text-[var(--trackit-text-muted)]">
+                            {formatDate(item.created_at)}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
         </section>
 
-        <section className="mt-10" aria-labelledby="recent-claims-heading">
+        <section
+          className="mt-10"
+          aria-labelledby="recent-claims-heading"
+        >
           <SectionHeader
             eyebrow="Claim activity"
             title="Recent claims"
@@ -611,16 +751,20 @@ export function DashboardPage() {
 
           <div className="mt-5">
             {isLoading ? (
-              <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-6 text-sm text-[var(--trackit-text-muted)] shadow-sm">
-                Loading your recent claims…
+              <div className="overflow-hidden rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm">
+                <div className="divide-y divide-[var(--trackit-border)]">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <RecentClaimSkeleton key={index} />
+                  ))}
+                </div>
               </div>
             ) : claimsQuery.isError ? (
               <div
                 role="alert"
                 className="rounded-2xl border border-[var(--trackit-danger-border)] bg-[var(--trackit-danger-soft)] p-6 text-sm leading-6 text-[var(--trackit-danger-text)]"
               >
-                We could not load your recent claims right now. Please
-                try again shortly.
+                We could not load your recent claims right now.
+                Please try again shortly.
               </div>
             ) : recentClaims.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-8 text-center shadow-sm">
@@ -637,6 +781,7 @@ export function DashboardPage() {
                   className="mt-5 inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-bold text-[var(--trackit-blue)] hover:bg-[var(--trackit-blue-soft)] hover:text-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
                 >
                   Discover items
+
                   <span className="ml-1" aria-hidden="true">
                     →
                   </span>
@@ -665,7 +810,9 @@ export function DashboardPage() {
                       <span
                         className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${getClaimStatusClasses(claim.status)}`}
                       >
-                        {getClaimStatusLabel(claim.status)}
+                        {getClaimStatusLabel(
+                          claim.status,
+                        )}
                       </span>
                     </Link>
                   ))}
@@ -696,6 +843,7 @@ export function DashboardPage() {
               className="mt-4 inline-flex min-h-10 items-center rounded-lg px-2 text-sm font-bold text-[var(--trackit-blue)] hover:bg-[var(--trackit-surface)] hover:text-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
             >
               Review TrackIt safety guidance
+
               <span className="ml-1" aria-hidden="true">
                 →
               </span>

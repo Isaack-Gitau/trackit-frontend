@@ -1,8 +1,15 @@
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useState,
+  type FormEvent,
+} from "react";
 import { Link } from "react-router-dom";
 
+import { getMediaUrl } from "../../api/config";
 import { getApiErrorMessage } from "../../api/errors";
 import { usePublicItems } from "../../hooks/usePublicItems";
+
+import { Skeleton } from "../../components/ui/Skeleton";
 
 import type { ItemType } from "../../types/item";
 
@@ -10,6 +17,8 @@ export function DiscoverPage() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [type, setType] = useState<ItemType | "">("");
+  const [categoryInput, setCategoryInput] = useState("");
+  const [locationInput, setLocationInput] = useState("");
   const [category, setCategory] = useState("");
   const [location, setLocation] = useState("");
   const [page, setPage] = useState(1);
@@ -31,15 +40,22 @@ export function DiscoverPage() {
     isLoading,
     isError,
     error,
+    refetch,
+    isFetching,
   } = usePublicItems(filters);
 
   const hasNextPage = items.length === 12;
   const hasPreviousPage = page > 1;
 
-  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSearchSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
+
     setPage(1);
     setSearch(searchInput.trim());
+    setCategory(categoryInput.trim());
+    setLocation(locationInput.trim());
   }
 
   function handleTypeChange(value: ItemType | "") {
@@ -47,24 +63,31 @@ export function DiscoverPage() {
     setPage(1);
   }
 
-  function handleCategoryChange(value: string) {
-    setCategory(value);
-    setPage(1);
-  }
+  function handleFilterSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
 
-  function handleLocationChange(value: string) {
-    setLocation(value);
     setPage(1);
+    setCategory(categoryInput.trim());
+    setLocation(locationInput.trim());
   }
 
   function clearFilters() {
     setSearchInput("");
     setSearch("");
     setType("");
+    setCategoryInput("");
+    setLocationInput("");
     setCategory("");
     setLocation("");
     setPage(1);
   }
+
+  const hasUnappliedFilters =
+    searchInput.trim() !== search ||
+    categoryInput.trim() !== category ||
+    locationInput.trim() !== location;
 
   return (
     <div className="bg-[var(--trackit-surface)]">
@@ -80,9 +103,9 @@ export function DiscoverPage() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-[var(--trackit-text-on-dark)] sm:text-lg">
-              Explore approved lost and found posts. Use the search and
-              filters to narrow the results and review the details of each
-              item.
+              Explore approved lost and found posts. Use the search
+              and filters to narrow the results and review the details
+              of each item.
             </p>
           </div>
         </div>
@@ -109,109 +132,133 @@ export function DiscoverPage() {
 
             <form
               onSubmit={handleSearchSubmit}
-              className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto]"
+              className="mt-6"
             >
-              <div>
-                <label
-                  htmlFor="discovery-search"
-                  className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
-                >
-                  Search
-                </label>
+              <div className="grid gap-4 lg:grid-cols-[1fr_auto]">
+                <div>
+                  <label
+                    htmlFor="discovery-search"
+                    className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+                  >
+                    Search
+                  </label>
 
-                <input
-                  id="discovery-search"
-                  type="search"
-                  value={searchInput}
-                  onChange={(event) => setSearchInput(event.target.value)}
-                  placeholder="Search by item, description, category, or location"
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
-                />
-              </div>
+                  <input
+                    id="discovery-search"
+                    type="search"
+                    value={searchInput}
+                    onChange={(event) =>
+                      setSearchInput(event.target.value)
+                    }
+                    placeholder="Search by item title or description"
+                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  />
+                </div>
 
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  className="min-h-12 w-full rounded-xl bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 lg:w-auto"
-                >
-                  Search posts
-                </button>
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    className="min-h-12 w-full rounded-xl bg-[var(--trackit-blue)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2 lg:w-auto"
+                  >
+                    Search posts
+                  </button>
+                </div>
               </div>
             </form>
 
-            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div>
-                <label
-                  htmlFor="discovery-type"
-                  className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
-                >
-                  Post type
-                </label>
+            <form
+              onSubmit={handleFilterSubmit}
+              className="mt-5"
+            >
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div>
+                  <label
+                    htmlFor="discovery-type"
+                    className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+                  >
+                    Post type
+                  </label>
 
-                <select
-                  id="discovery-type"
-                  value={type}
-                  onChange={(event) =>
-                    handleTypeChange(event.target.value as ItemType | "")
-                  }
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
-                >
-                  <option value="">All posts</option>
-                  <option value="lost">Lost items</option>
-                  <option value="found">Found items</option>
-                </select>
+                  <select
+                    id="discovery-type"
+                    value={type}
+                    onChange={(event) =>
+                      handleTypeChange(
+                        event.target.value as ItemType | "",
+                      )
+                    }
+                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  >
+                    <option value="">All posts</option>
+                    <option value="lost">Lost items</option>
+                    <option value="found">Found items</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="discovery-category"
+                    className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+                  >
+                    Category
+                  </label>
+
+                  <input
+                    id="discovery-category"
+                    type="text"
+                    value={categoryInput}
+                    onChange={(event) =>
+                      setCategoryInput(event.target.value)
+                    }
+                    placeholder="e.g. Electronics"
+                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="discovery-location"
+                    className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+                  >
+                    Location
+                  </label>
+
+                  <input
+                    id="discovery-location"
+                    type="text"
+                    value={locationInput}
+                    onChange={(event) =>
+                      setLocationInput(event.target.value)
+                    }
+                    placeholder="e.g. University Library"
+                    className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label
-                  htmlFor="discovery-category"
-                  className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+              <div className="mt-5 flex flex-wrap items-center justify-end gap-3">
+                {hasUnappliedFilters ? (
+                  <span className="text-xs font-medium text-[var(--trackit-text-muted)]">
+                    Some filters have not been applied yet.
+                  </span>
+                ) : null}
+
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="min-h-10 rounded-lg px-3 text-sm font-bold text-[var(--trackit-blue)] transition-colors hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
                 >
-                  Category
-                </label>
+                  Clear filters
+                </button>
 
-                <input
-                  id="discovery-category"
-                  type="text"
-                  value={category}
-                  onChange={(event) =>
-                    handleCategoryChange(event.target.value)
-                  }
-                  placeholder="e.g. Electronics"
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="discovery-location"
-                  className="mb-2 block text-sm font-bold text-[var(--trackit-navy)]"
+                <button
+                  type="submit"
+                  className="min-h-10 rounded-lg bg-[var(--trackit-blue)] px-4 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] focus-visible:ring-offset-2"
                 >
-                  Location
-                </label>
-
-                <input
-                  id="discovery-location"
-                  type="text"
-                  value={location}
-                  onChange={(event) =>
-                    handleLocationChange(event.target.value)
-                  }
-                  placeholder="e.g. University Library"
-                  className="min-h-12 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm outline-none focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
-                />
+                  Apply filters
+                </button>
               </div>
-            </div>
-
-            <div className="mt-5 flex justify-end">
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="min-h-10 rounded-lg px-3 text-sm font-bold text-[var(--trackit-blue)] transition-colors hover:bg-[var(--trackit-surface-blue)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
-              >
-                Clear filters
-              </button>
-            </div>
+            </form>
           </section>
 
           <section
@@ -232,11 +279,19 @@ export function DiscoverPage() {
                 </h2>
               </div>
 
-              {!isLoading && !isError && (
-                <p className="text-sm text-[var(--trackit-text-muted)]">
-                  Page {page}
-                </p>
-              )}
+              {!isLoading && !isError ? (
+                <div className="flex items-center gap-3">
+                  {isFetching ? (
+                    <span className="text-xs font-medium text-[var(--trackit-text-muted)]">
+                      Updating…
+                    </span>
+                  ) : null}
+
+                  <p className="text-sm text-[var(--trackit-text-muted)]">
+                    Page {page}
+                  </p>
+                </div>
+              ) : null}
             </div>
 
             {isLoading ? (
@@ -246,7 +301,10 @@ export function DiscoverPage() {
                 ))}
               </div>
             ) : isError ? (
-              <div className="mt-7 rounded-3xl border border-red-200 bg-red-50 px-6 py-10 text-center">
+              <div
+                role="alert"
+                className="mt-7 rounded-3xl border border-red-200 bg-red-50 px-6 py-10 text-center"
+              >
                 <h3 className="text-lg font-bold text-red-900">
                   We couldn't load the posts
                 </h3>
@@ -257,10 +315,11 @@ export function DiscoverPage() {
 
                 <button
                   type="button"
-                  onClick={() => window.location.reload()}
-                  className="mt-5 min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white hover:bg-[var(--trackit-blue-hover)]"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="mt-5 min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Try again
+                  {isFetching ? "Trying again…" : "Try again"}
                 </button>
               </div>
             ) : items.length === 0 ? (
@@ -270,13 +329,14 @@ export function DiscoverPage() {
                 </h3>
 
                 <p className="mt-2 text-sm leading-7 text-[var(--trackit-text-muted)]">
-                  Try adjusting your search terms or clearing some filters.
+                  Try adjusting your search terms or clearing some
+                  filters.
                 </p>
 
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="mt-5 min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white hover:bg-[var(--trackit-blue-hover)]"
+                  className="mt-5 min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)]"
                 >
                   Clear filters
                 </button>
@@ -292,8 +352,8 @@ export function DiscoverPage() {
                     >
                       {item.image ? (
                         <img
-                          src={item.image}
-                          alt=""
+                          src={getMediaUrl(item.image) ?? ""}
+                          alt={item.title}
                           className="h-48 w-full object-cover"
                         />
                       ) : (
@@ -322,11 +382,11 @@ export function DiscoverPage() {
                           </span>
                         </div>
 
-                        <h3 className="mt-4 text-lg font-extrabold text-[var(--trackit-navy)] group-hover:text-[var(--trackit-blue)]">
+                        <h3 className="mt-4 line-clamp-2 text-lg font-extrabold text-[var(--trackit-navy)] group-hover:text-[var(--trackit-blue)]">
                           {item.title}
                         </h3>
 
-                        <p className="mt-2 text-sm leading-6 text-[var(--trackit-text-muted)]">
+                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-[var(--trackit-text-muted)]">
                           {item.description}
                         </p>
 
@@ -353,9 +413,13 @@ export function DiscoverPage() {
                 <div className="mt-8 flex items-center justify-between gap-4">
                   <button
                     type="button"
-                    disabled={!hasPreviousPage}
-                    onClick={() => setPage((current) => current - 1)}
-                    className="min-h-11 rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] disabled:opacity-40"
+                    disabled={
+                      !hasPreviousPage || isFetching
+                    }
+                    onClick={() =>
+                      setPage((current) => current - 1)
+                    }
+                    className="min-h-11 rounded-lg border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-5 text-sm font-bold text-[var(--trackit-navy)] transition-colors hover:bg-[var(--trackit-surface-blue)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Previous
                   </button>
@@ -366,9 +430,11 @@ export function DiscoverPage() {
 
                   <button
                     type="button"
-                    disabled={!hasNextPage}
-                    onClick={() => setPage((current) => current + 1)}
-                    className="min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white hover:bg-[var(--trackit-blue-hover)] disabled:opacity-40"
+                    disabled={!hasNextPage || isFetching}
+                    onClick={() =>
+                      setPage((current) => current + 1)
+                    }
+                    className="min-h-11 rounded-lg bg-[var(--trackit-blue)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--trackit-blue-hover)] disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Next
                   </button>
@@ -384,14 +450,25 @@ export function DiscoverPage() {
 
 function DiscoveryResultSkeleton() {
   return (
-    <div className="animate-pulse overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)]">
-      <div className="h-48 bg-[var(--trackit-blue-soft)]" />
+    <div className="overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)]">
+      <Skeleton className="h-48 w-full rounded-none" />
 
       <div className="space-y-4 p-5">
-        <div className="h-6 w-20 rounded-full bg-[var(--trackit-blue-soft)]" />
-        <div className="h-5 w-3/4 rounded bg-[var(--trackit-blue-soft)]" />
-        <div className="h-4 w-full rounded bg-[var(--trackit-blue-soft)]" />
-        <div className="h-4 w-5/6 rounded bg-[var(--trackit-blue-soft)]" />
+        <div className="flex gap-2">
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-24 rounded-full" />
+        </div>
+
+        <Skeleton className="h-5 w-3/4 rounded" />
+
+        <Skeleton className="h-4 w-full rounded" />
+
+        <Skeleton className="h-4 w-5/6 rounded" />
+
+        <div className="border-t border-[var(--trackit-border)] pt-4">
+          <Skeleton className="h-4 w-32 rounded" />
+          <Skeleton className="mt-2 h-4 w-40 rounded" />
+        </div>
       </div>
     </div>
   );
