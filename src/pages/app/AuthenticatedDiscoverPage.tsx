@@ -51,6 +51,30 @@ function getTypeBadgeClasses(type: ItemType): string {
     : "bg-[var(--trackit-success-soft)] text-[var(--trackit-success)]";
 }
 
+function getStatusLabel(item: Item): string | null {
+  if (item.type !== "found") {
+    return null;
+  }
+
+  if (item.status === "claimed") {
+    return "Claimed";
+  }
+
+  if (item.status === "approved") {
+    return "Available";
+  }
+
+  return null;
+}
+
+function getStatusClasses(item: Item): string {
+  if (item.status === "claimed") {
+    return "bg-slate-100 text-slate-700";
+  }
+
+  return "bg-[var(--trackit-blue-soft)] text-[var(--trackit-blue)]";
+}
+
 function getItemSummary(item: Item): string {
   const description = item.description.trim();
 
@@ -131,6 +155,8 @@ function DiscoverItemCard({
 }: {
   item: Item;
 }) {
+  const statusLabel = getStatusLabel(item);
+
   return (
     <article className="group overflow-hidden rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
       <Link
@@ -142,16 +168,30 @@ function DiscoverItemCard({
       </Link>
 
       <div className="p-5">
-        <div className="flex items-center justify-between gap-3">
-          <span
-            className={[
-              "inline-flex items-center rounded-full px-2.5 py-1",
-              "text-xs font-bold",
-              getTypeBadgeClasses(item.type),
-            ].join(" ")}
-          >
-            {getTypeLabel(item.type)}
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={[
+                "inline-flex items-center rounded-full px-2.5 py-1",
+                "text-xs font-bold",
+                getTypeBadgeClasses(item.type),
+              ].join(" ")}
+            >
+              {getTypeLabel(item.type)}
+            </span>
+
+            {statusLabel ? (
+              <span
+                className={[
+                  "inline-flex items-center rounded-full px-2.5 py-1",
+                  "text-xs font-bold",
+                  getStatusClasses(item),
+                ].join(" ")}
+              >
+                {statusLabel}
+              </span>
+            ) : null}
+          </div>
 
           <span className="text-xs font-medium text-[var(--trackit-text-muted)]">
             {formatDate(item.created_at)}
