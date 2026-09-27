@@ -8,14 +8,14 @@ function AuthLoadingState() {
 }
 
 export function RequireAuth() {
-  const { status, isAuthenticated } = useAuth();
+  const { status, isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   if (status === "loading") {
     return <AuthLoadingState />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
     return (
       <Navigate
         to="/sign-in"
@@ -23,6 +23,10 @@ export function RequireAuth() {
         state={{ from: location }}
       />
     );
+  }
+
+  if (!user.is_active) {
+    return <Navigate to="/account-inactive" replace />;
   }
 
   return <Outlet />;
@@ -37,6 +41,10 @@ export function RequireModerator() {
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/sign-in" replace />;
+  }
+
+  if (!user.is_active) {
+    return <Navigate to="/account-inactive" replace />;
   }
 
   if (user.role !== "moderator" && user.role !== "admin") {
@@ -57,10 +65,13 @@ export function RequireAdmin() {
     return <Navigate to="/sign-in" replace />;
   }
 
+  if (!user.is_active) {
+    return <Navigate to="/account-inactive" replace />;
+  }
+
   if (user.role !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;
 }
-

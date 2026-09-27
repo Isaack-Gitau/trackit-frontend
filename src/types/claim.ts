@@ -13,6 +13,11 @@ export type ClaimItemSummary = {
   image: string | null;
 };
 
+export type ClaimantModerationIdentity = {
+  id: number;
+  username: string;
+};
+
 export type Claim = {
   id: number;
   item_id: number;
@@ -25,6 +30,10 @@ export type Claim = {
   reviewed_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type ModerationClaim = Claim & {
+  claimant: ClaimantModerationIdentity;
 };
 
 export type ClaimCreatePayload = {

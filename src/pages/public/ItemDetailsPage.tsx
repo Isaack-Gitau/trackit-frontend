@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { API_BASE_URL } from "../../api/config";
+import { getMediaUrl } from "../../api/config";
 import { getApiErrorMessage } from "../../api/errors";
 import { Button } from "../../components/ui/Button";
 import { useAuth } from "../../context/AuthContext";
@@ -17,24 +17,6 @@ import { useMyClaims } from "../../hooks/useMyClaims";
 import { usePublicItem } from "../../hooks/usePublicItem";
 
 const COMMENTS_BATCH_SIZE = 2;
-
-function getImageUrl(image: string | null): string | null {
-  if (!image) {
-    return null;
-  }
-
-  if (image.startsWith("http://") || image.startsWith("https://")) {
-    return image;
-  }
-
-  const normalizedPath = image.startsWith("/") ? image : `/${image}`;
-
-  if (normalizedPath.startsWith("/media/")) {
-    return `${API_BASE_URL}${normalizedPath}`;
-  }
-
-  return `${API_BASE_URL}/media${normalizedPath}`;
-}
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -478,7 +460,7 @@ export function ItemDetailsPage() {
     );
   }
 
-  const imageUrl = getImageUrl(item.image);
+  const imageUrl = getMediaUrl(item.image);
 
   const isCommentSubmitting = createCommentMutation.isPending;
 
@@ -517,8 +499,6 @@ export function ItemDetailsPage() {
     !activeClaim;
 
   const visibleComments = comments.slice(0, visibleCommentCount);
-
-  const hasMoreComments = visibleCommentCount < comments.length;
 
   return (
     <main className="min-h-[70vh] bg-[var(--trackit-surface)] px-5 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20">
@@ -1253,10 +1233,10 @@ export function ItemDetailsPage() {
                               }
                               className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--trackit-blue-soft)] text-sm font-bold text-[var(--trackit-blue)] ring-offset-2 transition hover:ring-2 hover:ring-[var(--trackit-blue-bright)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
                             >
-                              {getImageUrl(comment.author.profile_picture) ? (
+                              {getMediaUrl(comment.author.profile_picture) ? (
                                 <img
                                   src={
-                                    getImageUrl(
+                                    getMediaUrl(
                                       comment.author.profile_picture,
                                     ) ?? undefined
                                   }

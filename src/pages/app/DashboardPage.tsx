@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import { getMediaUrl } from "../../api/config";
+
 import { Button } from "../../components/ui/Button";
 import { Skeleton } from "../../components/ui/Skeleton";
 
@@ -16,31 +18,6 @@ function getDisplayName(
   username?: string,
 ): string {
   return username || "there";
-}
-
-function getImageUrl(image: string | null): string | null {
-  if (!image) {
-    return null;
-  }
-
-  if (
-    image.startsWith("http://") ||
-    image.startsWith("https://")
-  ) {
-    return image;
-  }
-
-  const apiBaseUrl = (
-    import.meta.env.VITE_API_BASE_URL ?? ""
-  ).replace(/\/+$/, "");
-
-  const normalizedImage = image.replace(/^\/+/, "");
-
-  if (normalizedImage.startsWith("media/")) {
-    return `${apiBaseUrl}/${normalizedImage}`;
-  }
-
-  return `${apiBaseUrl}/media/${normalizedImage}`;
 }
 
 function formatDate(value: string): string {
@@ -674,7 +651,7 @@ export function DashboardPage() {
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {recentItems.map((item) => {
-                  const imageUrl = getImageUrl(item.image);
+                  const imageUrl = getMediaUrl(item.image);
 
                   return (
                     <Link

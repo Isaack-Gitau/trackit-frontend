@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { getMediaUrl } from "../../api/config";
 import { getApiErrorMessage } from "../../api/errors";
 import { useAuth } from "../../context/AuthContext";
 import { useMyClaims } from "../../hooks/useMyClaims";
@@ -10,21 +11,6 @@ import type {
   Claim,
   ClaimStatus,
 } from "../../types/claim";
-
-function getImageUrl(image: string | null): string | null {
-  if (!image) {
-    return null;
-  }
-
-  if (
-    image.startsWith("http://") ||
-    image.startsWith("https://")
-  ) {
-    return image;
-  }
-
-  return image.startsWith("/") ? image : `/${image}`;
-}
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -125,7 +111,7 @@ function ClaimCard({
   claim: Claim;
   onWithdraw: (claim: Claim) => void;
 }) {
-  const imageUrl = getImageUrl(claim.item.image);
+  const imageUrl = getMediaUrl(claim.item.image);
 
   return (
     <article className="group overflow-hidden rounded-3xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">

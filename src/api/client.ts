@@ -1,5 +1,8 @@
 import { API_BASE_URL } from "./config";
-import { ApiError } from "./errors";
+import {
+  ApiError,
+  getApiErrorPayloadMessage,
+} from "./errors";
 
 type ApiRequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -24,12 +27,15 @@ function isBodyInit(value: unknown): value is BodyInit {
   );
 }
 
-async function parseResponseBody(response: Response): Promise<unknown> {
+async function parseResponseBody(
+  response: Response,
+): Promise<unknown> {
   if (response.status === 204) {
     return null;
   }
 
-  const contentType = response.headers.get("content-type") ?? "";
+  const contentType =
+    response.headers.get("content-type") ?? "";
 
   if (contentType.includes("application/json")) {
     try {
@@ -41,33 +47,11 @@ async function parseResponseBody(response: Response): Promise<unknown> {
 
   try {
     const text = await response.text();
+
     return text || null;
   } catch {
     return null;
   }
-}
-
-function getErrorMessage(
-  payload: unknown,
-  fallback: string,
-): string {
-  if (typeof payload === "string" && payload.trim()) {
-    return payload;
-  }
-
-  if (payload && typeof payload === "object") {
-    const record = payload as Record<string, unknown>;
-
-    if (typeof record.detail === "string" && record.detail.trim()) {
-      return record.detail;
-    }
-
-    if (typeof record.message === "string" && record.message.trim()) {
-      return record.message;
-    }
-  }
-
-  return fallback;
 }
 
 export async function apiRequest<T = unknown>({
@@ -78,7 +62,9 @@ export async function apiRequest<T = unknown>({
   signal,
   headers = {},
 }: ApiRequestOptions): Promise<T> {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const normalizedPath = path.startsWith("/")
+    ? path
+    : `/${path}`;
 
   const requestHeaders = new Headers({
     Accept: "application/json",
@@ -86,7 +72,10 @@ export async function apiRequest<T = unknown>({
   });
 
   if (accessToken) {
-    requestHeaders.set("Authorization", `Bearer ${accessToken}`);
+    requestHeaders.set(
+      "Authorization",
+      `Bearer ${accessToken}`,
+    );
   }
 
   let requestBody: BodyInit | undefined;
@@ -95,29 +84,48 @@ export async function apiRequest<T = unknown>({
     if (isFormData(body) || isBodyInit(body)) {
       requestBody = body;
     } else {
-      requestHeaders.set("Content-Type", "application/json");
+      requestHeaders.set(
+        "Content-Type",
+        "application/json",
+      );
+
       requestBody = JSON.stringify(body);
     }
   }
 
-  const response = await fetch(
-    `${API_BASE_URL}${normalizedPath}`,
-    {
-      method,
-      headers: requestHeaders,
-      body: requestBody,
-      signal,
-    },
-  );
+  let response: Response;
+
+  try {
+    response = await fetch(
+      `${API_BASE_URL}${normalizedPath}`,
+      {
+        method,
+        headers: requestHeaders,
+        body: requestBody,
+        signal,
+      },
+    );
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+
+    throw new ApiError(
+      "TrackIt could not connect to the server. Please check your connection and try again.",
+      0,
+      error,
+    );
+  }
 
   const payload = await parseResponseBody(response);
 
   if (!response.ok) {
+    const message =
+      getApiErrorPayloadMessage(payload) ??
+      `TrackIt request failed with status ${response.status}.`;
+
     throw new ApiError(
-      getErrorMessage(
-        payload,
-        `TrackIt request failed with status ${response.status}.`,
-      ),
+      message,
       response.status,
       payload,
     );

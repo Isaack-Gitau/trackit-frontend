@@ -34,7 +34,10 @@ import {
 
 import { useProfile } from "../../hooks/useProfile";
 
-import type { ClaimStatus } from "../../types/claim";
+import type {
+  Claim,
+  ClaimStatus,
+} from "../../types/claim";
 
 import type { Item } from "../../types/item";
 
@@ -42,6 +45,9 @@ import type {
   ProfilePrivacyUpdatePayload,
   ProfileSocialLinks,
 } from "../../types/profile";
+
+const EMPTY_ITEMS: Item[] = [];
+const EMPTY_CLAIMS: Claim[] = [];
 
 function getMediaUrl(
   value: string | null,
@@ -815,6 +821,14 @@ export function ProfilePage() {
       imageY: number;
     } | null>(null);
 
+  const pictureEditorPreviewUrlRef =
+    useRef<string | null>(null);
+
+  useEffect(() => {
+    pictureEditorPreviewUrlRef.current =
+      pictureEditor?.previewUrl ?? null;
+  }, [pictureEditor?.previewUrl]);
+
   function stopCameraStream() {
     const stream =
       cameraStreamRef.current;
@@ -861,9 +875,9 @@ export function ProfilePage() {
     return () => {
       stopCameraStream();
 
-      if (pictureEditor?.previewUrl) {
+      if (pictureEditorPreviewUrlRef.current) {
         URL.revokeObjectURL(
-          pictureEditor.previewUrl,
+          pictureEditorPreviewUrlRef.current,
         );
       }
     };
@@ -1020,6 +1034,9 @@ export function ProfilePage() {
       return;
     }
 
+    // Intentionally synchronize server-fetched profile data into the local
+    // editable form state when the profile changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setForm(
       createFormState(
         profileQuery.data,
@@ -1052,9 +1069,11 @@ export function ProfilePage() {
     ],
   );
 
-  const items = myItemsQuery.data ?? [];
+  const items =
+    myItemsQuery.data ?? EMPTY_ITEMS;
 
-  const claims = myClaimsQuery.data ?? [];
+  const claims =
+    myClaimsQuery.data ?? EMPTY_CLAIMS;
 
   const statistics = useMemo(
     () => ({
@@ -1925,6 +1944,14 @@ export function ProfilePage() {
 
     setProfileError("");
 
+    if (!form) {
+      setProfileError(
+        "Your profile form is not ready yet. Please try again.",
+      );
+
+      return;
+    }
+
     const socialLinks =
       parseSocialLinks(
         form.social_links,
@@ -2584,7 +2611,7 @@ export function ProfilePage() {
           )}
         </section>
 
-        {isEditing ? (
+        {isEditing && form ? (
           <section className="mt-12">
             <div className="flex flex-col gap-3 border-b border-[var(--trackit-border)] pb-5 sm:flex-row sm:items-end sm:justify-between">
               <div>

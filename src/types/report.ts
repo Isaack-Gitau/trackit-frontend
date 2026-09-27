@@ -4,6 +4,11 @@ export type ReportStatus =
   | "resolved"
   | "withdrawn";
 
+export type ReporterModerationIdentity = {
+  id: number;
+  username: string;
+};
+
 export type Report = {
   id: number;
   item_id: number;
@@ -16,6 +21,10 @@ export type Report = {
   resolution_note: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type ModerationReport = Report & {
+  reporter: ReporterModerationIdentity;
 };
 
 export type CreateReportPayload = {

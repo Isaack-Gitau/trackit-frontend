@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import { getMediaUrl } from "../../api/config";
+
 import { usePublicItems } from "../../hooks/usePublicItems";
 
 import { Skeleton } from "../ui/Skeleton";
@@ -96,7 +98,7 @@ export function DiscoverySection() {
                       <div className="flex gap-3">
                         {item.image ? (
                           <img
-                            src={item.image}
+                            src={getMediaUrl(item.image) ?? undefined}
                             alt=""
                             className="h-16 w-16 shrink-0 rounded-xl object-cover"
                           />

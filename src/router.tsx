@@ -35,6 +35,10 @@ import { ClaimsPage } from "./pages/app/ClaimsPage";
 import { DashboardPage } from "./pages/app/DashboardPage";
 import { MyItemsPage } from "./pages/app/MyItemsPage";
 import { MatchesPage } from "./pages/app/MatchesPage";
+import { ModeratorItemsPage } from "./pages/app/ModeratorItemsPage";
+import { ModeratorOverviewPage } from "./pages/app/ModeratorOverviewPage";
+import { ModeratorClaimsPage } from "./pages/app/ModeratorClaimsPage";
+import { ModeratorReportsPage } from "./pages/app/ModeratorReportsPage";
 import { NotificationsPage } from "./pages/app/NotificationsPage";
 import { ReportsPage } from "./pages/app/ReportsPage";
 import { PostItemPage } from "./pages/app/PostItemPage";
@@ -220,7 +224,19 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/moderator",
-            element: <PlaceholderPage title="Moderator area" />,
+            element: <ModeratorOverviewPage />,
+          },
+          {
+            path: "/moderator/items",
+            element: <ModeratorItemsPage />,
+          },
+          {
+            path: "/moderator/claims",
+            element: <ModeratorClaimsPage />,
+          },
+          {
+            path: "/moderator/reports",
+            element: <ModeratorReportsPage />,
           },
         ],
       },

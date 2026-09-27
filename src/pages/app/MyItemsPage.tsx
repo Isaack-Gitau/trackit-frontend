@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { getMediaUrl } from "../../api/config";
 import { getApiErrorMessage } from "../../api/errors";
 import { useAuth } from "../../context/AuthContext";
 import { useDeleteItem } from "../../hooks/useItemMutations";
@@ -15,31 +16,6 @@ import type {
 
 type ItemFilter = "all" | ItemType;
 type StatusFilter = "all" | ItemStatus;
-
-function getImageUrl(image: string | null): string | null {
-  if (!image) {
-    return null;
-  }
-
-  if (
-    image.startsWith("http://") ||
-    image.startsWith("https://")
-  ) {
-    return image;
-  }
-
-  const apiBaseUrl = (
-    import.meta.env.VITE_API_BASE_URL ?? ""
-  ).replace(/\/+$/, "");
-
-  const normalizedImage = image.replace(/^\/+/, "");
-
-  if (normalizedImage.startsWith("media/")) {
-    return `${apiBaseUrl}/${normalizedImage}`;
-  }
-
-  return `${apiBaseUrl}/media/${normalizedImage}`;
-}
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -138,7 +114,7 @@ function ItemCard({
   hasClaim: boolean;
   onDelete: (item: Item) => void;
 }) {
-  const imageUrl = getImageUrl(item.image);
+  const imageUrl = getMediaUrl(item.image);
   const canDelete = item.status !== "claimed";
 
   return (
