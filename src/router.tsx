@@ -31,39 +31,23 @@ import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
 
+import { AdminModerationPage } from "./pages/app/AdminModerationPage";
+import { AdminOverviewPage } from "./pages/app/AdminOverviewPage";
+import { AdminUserDetailPage } from "./pages/app/AdminUserDetailPage";
+import { AdminUsersPage } from "./pages/app/AdminUsersPage";
 import { ClaimsPage } from "./pages/app/ClaimsPage";
 import { DashboardPage } from "./pages/app/DashboardPage";
-import { MyItemsPage } from "./pages/app/MyItemsPage";
 import { MatchesPage } from "./pages/app/MatchesPage";
+import { ModeratorClaimsPage } from "./pages/app/ModeratorClaimsPage";
 import { ModeratorItemsPage } from "./pages/app/ModeratorItemsPage";
 import { ModeratorOverviewPage } from "./pages/app/ModeratorOverviewPage";
-import { ModeratorClaimsPage } from "./pages/app/ModeratorClaimsPage";
 import { ModeratorReportsPage } from "./pages/app/ModeratorReportsPage";
+import { MyItemsPage } from "./pages/app/MyItemsPage";
 import { NotificationsPage } from "./pages/app/NotificationsPage";
-import { ReportsPage } from "./pages/app/ReportsPage";
 import { PostItemPage } from "./pages/app/PostItemPage";
 import { ProfilePage } from "./pages/app/ProfilePage";
+import { ReportsPage } from "./pages/app/ReportsPage";
 import { SettingsPage } from "./pages/app/SettingsPage";
-
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <main className="min-h-[60vh] bg-[var(--trackit-surface)] px-5 py-16 sm:px-6 lg:px-8 lg:py-24">
-      <div className="mx-auto w-full max-w-5xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--trackit-blue)]">
-          TrackIt
-        </p>
-
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-[var(--trackit-navy)] sm:text-4xl">
-          {title}
-        </h1>
-
-        <p className="mt-4 max-w-2xl text-[var(--trackit-text-muted)]">
-          This TrackIt route is reserved for the next implementation phase.
-        </p>
-      </div>
-    </main>
-  );
-}
 
 export const router = createBrowserRouter([
   {
@@ -251,7 +235,19 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "/admin",
-            element: <PlaceholderPage title="Admin area" />,
+            element: <AdminOverviewPage />,
+          },
+          {
+            path: "/admin/users",
+            element: <AdminUsersPage />,
+          },
+          {
+            path: "/admin/users/:userId",
+            element: <AdminUserDetailPage />,
+          },
+          {
+            path: "/admin/moderation",
+            element: <AdminModerationPage />,
           },
         ],
       },
