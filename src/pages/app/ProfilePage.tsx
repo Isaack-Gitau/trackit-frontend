@@ -143,38 +143,110 @@ function formatDate(
   ).format(date);
 }
 
+type SocialLinkFormEntry = {
+  id: string;
+  platform: string;
+  url: string;
+};
+
 function normalizeSocialLinks(
   links: ProfileSocialLinks,
-): string {
-  return JSON.stringify(
-    links,
-    null,
-    2,
+): SocialLinkFormEntry[] {
+  return Object.entries(links).map(
+    ([platform, value], index) => ({
+      id: `${platform}-${index}`,
+      platform,
+      url:
+        typeof value === "string"
+          ? value
+          : "",
+    }),
   );
 }
 
-function parseSocialLinks(
+function normalizeSocialPlatform(
+  platform: string,
+): string {
+  return platform
+    .trim()
+    .toLowerCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ");
+}
+
+function isSafeSocialUrl(
   value: string,
-): ProfileSocialLinks | null {
+): boolean {
   if (!value.trim()) {
-    return {};
+    return false;
   }
 
   try {
-    const parsed: unknown = JSON.parse(value);
+    const url = new URL(value.trim());
 
-    if (
-      !parsed ||
-      typeof parsed !== "object" ||
-      Array.isArray(parsed)
-    ) {
-      return null;
+    return (
+      url.protocol === "http:" ||
+      url.protocol === "https:"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function parseSocialLinks(
+  entries: SocialLinkFormEntry[],
+): ProfileSocialLinks {
+  return entries.reduce<ProfileSocialLinks>(
+    (result, entry) => {
+      const platform = entry.platform.trim();
+      const url = entry.url.trim();
+
+      if (platform && url) {
+        result[platform] = url;
+      }
+
+      return result;
+    },
+    {},
+  );
+}
+
+function validateSocialLinks(
+  entries: SocialLinkFormEntry[],
+): string | null {
+  const usedPlatforms = new Set<string>();
+
+  for (const entry of entries) {
+    const platform = entry.platform.trim();
+    const url = entry.url.trim();
+
+    if (!platform && !url) {
+      continue;
     }
 
-    return parsed as ProfileSocialLinks;
-  } catch {
-    return null;
+    if (!platform) {
+      return "Enter a platform name for each social link.";
+    }
+
+    if (!url) {
+      return `Enter a URL for ${platform}.`;
+    }
+
+    if (!isSafeSocialUrl(url)) {
+      return `The URL for ${platform} must start with http:// or https://.`;
+    }
+
+    const normalizedPlatform =
+      normalizeSocialPlatform(platform);
+
+    if (usedPlatforms.has(normalizedPlatform)) {
+      return `You have entered ${platform} more than once.`;
+    }
+
+    usedPlatforms.add(normalizedPlatform);
   }
+
+  return null;
 }
 
 function getClaimStatusLabel(
@@ -265,7 +337,7 @@ type ProfileFormState = {
   phone_number: string;
   bio: string;
   address: string;
-  social_links: string;
+  social_links: SocialLinkFormEntry[];
 };
 
 type PrivacyState = {
@@ -1952,18 +2024,23 @@ export function ProfilePage() {
       return;
     }
 
-    const socialLinks =
-      parseSocialLinks(
+    const socialLinksError =
+      validateSocialLinks(
         form.social_links,
       );
 
-    if (socialLinks === null) {
+    if (socialLinksError) {
       setProfileError(
-        "Social links must be valid JSON containing an object.",
+        socialLinksError,
       );
 
       return;
     }
+
+    const socialLinks =
+      parseSocialLinks(
+        form.social_links,
+      );
 
     const originalEmail =
       profile.email.trim();
@@ -2865,37 +2942,174 @@ export function ProfilePage() {
                   </div>
 
                   <div>
-                    <FieldLabel htmlFor="profile-social-links">
+                    <FieldLabel
+                      htmlFor={
+                        form.social_links[0]
+                          ? `profile-social-platform-${form.social_links[0].id}`
+                          : "profile-add-social-link"
+                      }
+                    >
                       Social links
                     </FieldLabel>
 
-                    <textarea
-                      id="profile-social-links"
-                      value={
-                        form.social_links
-                      }
-                      onChange={(
-                        event,
-                      ) =>
+                    <p className="mt-2 text-sm leading-6 text-[var(--trackit-muted)]">
+                      Add links to your social profiles or personal website.
+                      You can add as many links as you need.
+                    </p>
+
+                    {form.social_links.length === 0 ? (
+                      <div className="mt-4 rounded-xl border border-dashed border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] px-4 py-4">
+                        <p className="text-sm font-medium text-[var(--trackit-navy)]">
+                          No social links added yet.
+                        </p>
+                        <p className="mt-1 text-sm leading-6 text-[var(--trackit-muted)]">
+                          Add your GitHub, LinkedIn, website, or another profile.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="mt-4 space-y-4">
+                          {form.social_links.map(
+                          (entry, index) => (
+                            <div
+                            key={entry.id}
+                            className="rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-4"
+                          >
+                            <div className="grid gap-4 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.6fr)_auto] sm:items-end">
+                              <div>
+                                <label
+                                  htmlFor={`profile-social-platform-${entry.id}`}
+                                  className="text-sm font-semibold text-[var(--trackit-navy)]"
+                                >
+                                  Platform
+                                </label>
+
+                                <input
+                                  id={`profile-social-platform-${entry.id}`}
+                                  type="text"
+                                  value={
+                                    entry.platform
+                                  }
+                                  onChange={(
+                                    event,
+                                  ) => {
+                                    const nextLinks =
+                                      [...form.social_links];
+
+                                    nextLinks[index] = {
+                                      ...entry,
+                                      platform:
+                                        event.target.value,
+                                    };
+
+                                    setForm({
+                                      ...form,
+                                      social_links:
+                                        nextLinks,
+                                    });
+                                  }}
+                                  disabled={
+                                    updateProfileMutation.isPending
+                                  }
+                                  className="mt-2 min-h-11 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 text-sm text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
+                                  placeholder="GitHub"
+                                />
+                              </div>
+
+                              <div>
+                                <label
+                                  htmlFor={`profile-social-url-${entry.id}`}
+                                  className="text-sm font-semibold text-[var(--trackit-navy)]"
+                                >
+                                  URL
+                                </label>
+
+                                <input
+                                  id={`profile-social-url-${entry.id}`}
+                                  type="url"
+                                  value={
+                                    entry.url
+                                  }
+                                  onChange={(
+                                    event,
+                                  ) => {
+                                    const nextLinks =
+                                      [...form.social_links];
+
+                                    nextLinks[index] = {
+                                      ...entry,
+                                      url:
+                                        event.target.value,
+                                    };
+
+                                    setForm({
+                                      ...form,
+                                      social_links:
+                                        nextLinks,
+                                    });
+                                  }}
+                                  disabled={
+                                    updateProfileMutation.isPending
+                                  }
+                                  className="mt-2 min-h-11 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 text-sm text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
+                                  placeholder="https://github.com/username"
+                                />
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setForm({
+                                    ...form,
+                                    social_links:
+                                      form.social_links.filter(
+                                        (link) =>
+                                          link.id !==
+                                          entry.id,
+                                      ),
+                                  });
+                                }}
+                                disabled={
+                                  updateProfileMutation.isPending
+                                }
+                                className="min-h-11 rounded-xl border border-red-200 px-4 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    )}
+
+                    <button
+                      id="profile-add-social-link"
+                      type="button"
+                      onClick={() => {
                         setForm({
                           ...form,
-                          social_links:
-                            event.target.value,
-                        })
-                      }
-                      rows={7}
-                      spellCheck={false}
+                          social_links: [
+                            ...form.social_links,
+                            {
+                              id: `social-link-${Date.now()}-${form.social_links.length}`,
+                              platform: "",
+                              url: "",
+                            },
+                          ],
+                        });
+                      }}
                       disabled={
                         updateProfileMutation.isPending
                       }
-                      className="mt-2 w-full resize-y rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 font-mono text-sm text-[var(--trackit-navy)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20 disabled:bg-[var(--trackit-surface-blue)]"
-                      placeholder={`{
-  "website": "https://example.com"
-}`}
-                    />
+                      className="mt-4 inline-flex min-h-11 items-center rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm font-semibold !text-[var(--trackit-blue)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-blue-soft)] hover:!text-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {form.social_links.length === 0
+                        ? "+ Add social link"
+                        : "+ Add another link"}
+                    </button>
 
                     <FieldHelp>
-                      Enter your social links.
+                      Use full URLs beginning with http:// or https://.
                     </FieldHelp>
                   </div>
 

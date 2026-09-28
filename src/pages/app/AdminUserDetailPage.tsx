@@ -116,32 +116,179 @@ function DetailField({
   );
 }
 
-function formatRecord(
-  value: Record<string, unknown>,
-): string {
-  const entries = Object.entries(value);
+function getSocialLabel(key: string): string {
+  return key
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (character) =>
+      character.toUpperCase(),
+    );
+}
 
-  if (entries.length === 0) {
-    return "None configured";
+function isSafeHttpUrl(
+  value: unknown,
+): value is string {
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return false;
   }
 
-  return entries
-    .map(([key, entryValue]) => {
-      let formattedValue: string;
+  try {
+    const url = new URL(value);
 
-      if (typeof entryValue === "string") {
-        formattedValue = entryValue;
-      } else {
-        try {
-          formattedValue = JSON.stringify(entryValue);
-        } catch {
-          formattedValue = String(entryValue);
-        }
-      }
+    return (
+      url.protocol === "http:" ||
+      url.protocol === "https:"
+    );
+  } catch {
+    return false;
+  }
+}
 
-      return `${key}: ${formattedValue}`;
-    })
-    .join("\n");
+function SocialLinks({
+  links,
+}: {
+  links: Record<string, unknown>;
+}) {
+  const socialEntries = Object.entries(links).filter(
+    ([, value]) => isSafeHttpUrl(value),
+  );
+
+  return (
+    <div>
+      <dt className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
+        Social links
+      </dt>
+
+      <dd className="mt-3">
+        {socialEntries.length > 0 ? (
+          <div className="flex flex-wrap gap-3">
+            {socialEntries.map(([key, value]) => (
+              <a
+                key={key}
+                href={value as string}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex min-h-10 items-center rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 text-sm font-semibold !text-[var(--trackit-blue)] transition hover:border-[var(--trackit-blue)] hover:bg-[var(--trackit-blue-soft)] hover:!text-[var(--trackit-blue-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--trackit-blue-bright)]"
+              >
+                {getSocialLabel(key)}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <span className="text-sm leading-6 text-[var(--trackit-text)]">
+            None configured
+          </span>
+        )}
+      </dd>
+    </div>
+  );
+}
+
+const privacyPreferenceLabels: Record<string, string> = {
+  profile_picture: "Profile picture",
+  bio: "Bio",
+  first_name: "First name",
+  last_name: "Last name",
+  email: "Email",
+  phone_number: "Phone number",
+  social_links: "Social links",
+};
+
+function formatPreferenceLabel(key: string): string {
+  const knownLabel = privacyPreferenceLabels[key];
+
+  if (knownLabel) {
+    return knownLabel;
+  }
+
+  return key
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (character) =>
+      character.toUpperCase(),
+    );
+}
+
+function PrivacyPreferenceBadge({
+  visible,
+}: {
+  visible: boolean;
+}) {
+  return (
+    <span
+      className={[
+        "inline-flex min-w-20 justify-center rounded-full px-3 py-1",
+        "text-xs font-semibold",
+        visible
+          ? "bg-emerald-100 text-emerald-800"
+          : "bg-slate-100 text-slate-600",
+      ].join(" ")}
+    >
+      {visible ? "Visible" : "Hidden"}
+    </span>
+  );
+}
+
+function PrivacyPreferences({
+  preferences,
+}: {
+  preferences: Record<string, unknown>;
+}) {
+  const entries = Object.entries(preferences);
+
+  if (entries.length === 0) {
+    return (
+      <div className="rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-4">
+        <p className="text-sm font-medium text-[var(--trackit-navy)]">
+          No privacy preferences configured
+        </p>
+
+        <p className="mt-1 text-sm leading-6 text-[var(--trackit-muted)]">
+          This account has not configured any profile visibility
+          preferences.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-[var(--trackit-border)]">
+      <div className="grid grid-cols-[1fr_auto] border-b border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-4 py-3 sm:px-5">
+        <span className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
+          Information
+        </span>
+
+        <span className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
+          Visibility
+        </span>
+      </div>
+
+      <div className="divide-y divide-[var(--trackit-border)]">
+        {entries.map(([key, value]) => {
+          const visible =
+            typeof value === "boolean"
+              ? value
+              : Boolean(value);
+
+          return (
+            <div
+              key={key}
+              className="grid grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 sm:px-5"
+            >
+              <span className="min-w-0 text-sm font-medium text-[var(--trackit-text)]">
+                {formatPreferenceLabel(key)}
+              </span>
+
+              <PrivacyPreferenceBadge
+                visible={visible}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function ActionError({
@@ -790,21 +937,28 @@ export function AdminUserDetailPage() {
                   }
                 />
 
-                <DetailField
-                  label="Social links"
-                  value={formatRecord(
-                    targetUser.social_links,
-                  )}
+                <SocialLinks
+                  links={targetUser.social_links}
                 />
               </dl>
 
               <div className="mt-6">
-                <DetailField
-                  label="Preferences"
-                  value={formatRecord(
-                    targetUser.preferences,
-                  )}
-                />
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
+                    Privacy preferences
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[var(--trackit-muted)]">
+                    Controls which profile information the user allows
+                    other users to see.
+                  </p>
+
+                  <div className="mt-4">
+                    <PrivacyPreferences
+                      preferences={targetUser.preferences}
+                    />
+                  </div>
+                </div>
               </div>
             </section>
           </div>
