@@ -31,6 +31,7 @@ import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
 
+import AdminAuditLogsPage from "./pages/app/AdminAuditLogsPage";
 import { AdminEmailPage } from "./pages/app/AdminEmailPage";
 import { AdminModerationPage } from "./pages/app/AdminModerationPage";
 import { AdminOverviewPage } from "./pages/app/AdminOverviewPage";
@@ -253,6 +254,10 @@ export const router = createBrowserRouter([
           {
             path: "/admin/email",
             element: <AdminEmailPage />,
+          },
+          {
+            path: "/admin/audit-logs",
+            element: <AdminAuditLogsPage />,
           },
         ],
       },

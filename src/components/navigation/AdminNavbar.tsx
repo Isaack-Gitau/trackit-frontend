@@ -26,6 +26,10 @@ const navigation = [
     label: "Email",
     to: "/admin/email",
   },
+  {
+    label: "Audit Logs",
+    to: "/admin/audit-logs",
+  },
 ];
 
 function isNavigationItemActive(
