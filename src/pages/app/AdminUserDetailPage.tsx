@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../../components/ui/Button";
+import { ConfirmDialog } from "../../components/ui/ConfirmDialog";
 import { getApiErrorMessage } from "../../api/errors";
 import {
   useActivateUser,
@@ -332,6 +333,20 @@ export function AdminUserDetailPage() {
   const [reason, setReason] = useState("");
   const [successMessage, setSuccessMessage] =
     useState<string | null>(null);
+  const [confirmationAction, setConfirmationAction] =
+    useState<
+      | "promote-user"
+      | "promote-moderator"
+      | "demote-admin"
+      | "revoke-moderator"
+      | "deactivate"
+      | "activate"
+      | null
+    >(null);
+  const [validationError, setValidationError] =
+    useState<string | null>(null);
+  const [deactivationPreviewAt, setDeactivationPreviewAt] =
+    useState<string | null>(null);
 
   const detailQuery = useAdminUserDetail(
     userId,
@@ -376,125 +391,46 @@ export function AdminUserDetailPage() {
 
   function clearActionState() {
     setSuccessMessage(null);
+    setValidationError(null);
   }
 
-  async function handlePromoteUser() {
+  function handlePromoteUser() {
     if (!userId || !targetUser) {
       return;
     }
 
     clearActionState();
-
-    const confirmed = window.confirm(
-      `Promote ${targetUser.username} to moderator?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await promoteUserMutation.mutateAsync({
-        userId,
-      });
-
-      setSuccessMessage(
-        `${targetUser.username} is now a moderator.`,
-      );
-      void detailQuery.refetch();
-    } catch {
-      // The mutation error is rendered below.
-    }
+    setConfirmationAction("promote-user");
   }
 
-  async function handlePromoteModerator() {
+  function handlePromoteModerator() {
     if (!userId || !targetUser) {
       return;
     }
 
     clearActionState();
-
-    const confirmed = window.confirm(
-      `Promote ${targetUser.username} to administrator?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await promoteModeratorMutation.mutateAsync({
-        userId,
-      });
-
-      setSuccessMessage(
-        `${targetUser.username} is now an administrator.`,
-      );
-      void detailQuery.refetch();
-    } catch {
-      // The mutation error is rendered below.
-    }
+    setConfirmationAction("promote-moderator");
   }
 
-  async function handleDemoteAdmin() {
+  function handleDemoteAdmin() {
     if (!userId || !targetUser) {
       return;
     }
 
     clearActionState();
-
-    const confirmed = window.confirm(
-      `Demote ${targetUser.username} from administrator to moderator?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await demoteAdminMutation.mutateAsync({
-        userId,
-      });
-
-      setSuccessMessage(
-        `${targetUser.username} is now a moderator.`,
-      );
-      void detailQuery.refetch();
-    } catch {
-      // The mutation error is rendered below.
-    }
+    setConfirmationAction("demote-admin");
   }
 
-  async function handleRevokeModerator() {
+  function handleRevokeModerator() {
     if (!userId || !targetUser) {
       return;
     }
 
     clearActionState();
-
-    const confirmed = window.confirm(
-      `Revoke moderator privileges from ${targetUser.username}?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await revokeModeratorMutation.mutateAsync({
-        userId,
-      });
-
-      setSuccessMessage(
-        `${targetUser.username} is now a regular user.`,
-      );
-      void detailQuery.refetch();
-    } catch {
-      // The mutation error is rendered below.
-    }
+    setConfirmationAction("revoke-moderator");
   }
 
-  async function handleDeactivate() {
+  function handleDeactivate() {
     if (!userId || !targetUser) {
       return;
     }
@@ -502,71 +438,155 @@ export function AdminUserDetailPage() {
     clearActionState();
 
     const parsedDuration = Number(durationHours);
+    const trimmedReason = reason.trim();
 
     if (
       !Number.isInteger(parsedDuration) ||
       parsedDuration < 1 ||
       parsedDuration > 2160
     ) {
-      setSuccessMessage(null);
-      return;
-    }
-
-    const confirmed = window.confirm(
-      `Deactivate ${targetUser.username}'s account for ${parsedDuration} hour(s)?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      await deactivateMutation.mutateAsync({
-        userId,
-        payload: {
-          duration_hours: parsedDuration,
-          reason: reason.trim() || null,
-        },
-      });
-
-      setSuccessMessage(
-        `${targetUser.username}'s account has been deactivated.`,
+      setValidationError(
+        "Choose a deactivation duration between 1 and 2160 hours.",
       );
-      setReason("");
-      void detailQuery.refetch();
-    } catch {
-      // The mutation error is rendered below.
+      return;
     }
+
+    if (trimmedReason.length > 500) {
+      setValidationError(
+        "The deactivation reason cannot exceed 500 characters.",
+      );
+      return;
+    }
+
+    setDeactivationPreviewAt(
+      new Date(
+        Date.now() + parsedDuration * 60 * 60 * 1000,
+      ).toISOString(),
+    );
+    setConfirmationAction("deactivate");
   }
 
-  async function handleActivate() {
+  function handleActivate() {
     if (!userId || !targetUser) {
       return;
     }
 
     clearActionState();
+    setConfirmationAction("activate");
+  }
 
-    const confirmed = window.confirm(
-      `Reactivate ${targetUser.username}'s account?`,
-    );
-
-    if (!confirmed) {
+  async function confirmAction() {
+    if (!userId || !targetUser || !confirmationAction) {
       return;
     }
 
-    try {
-      await activateMutation.mutateAsync({
-        userId,
-      });
+    const action = confirmationAction;
 
-      setSuccessMessage(
-        `${targetUser.username}'s account has been reactivated.`,
-      );
+    try {
+      if (action === "promote-user") {
+        await promoteUserMutation.mutateAsync({ userId });
+        setSuccessMessage(
+          `${targetUser.username} is now a moderator.`,
+        );
+      } else if (action === "promote-moderator") {
+        await promoteModeratorMutation.mutateAsync({ userId });
+        setSuccessMessage(
+          `${targetUser.username} is now an administrator.`,
+        );
+      } else if (action === "demote-admin") {
+        await demoteAdminMutation.mutateAsync({ userId });
+        setSuccessMessage(
+          `${targetUser.username} is now a moderator.`,
+        );
+      } else if (action === "revoke-moderator") {
+        await revokeModeratorMutation.mutateAsync({ userId });
+        setSuccessMessage(
+          `${targetUser.username} is now a regular user.`,
+        );
+      } else if (action === "deactivate") {
+        const parsedDuration = Number(durationHours);
+
+        await deactivateMutation.mutateAsync({
+          userId,
+          payload: {
+            duration_hours: parsedDuration,
+            reason: reason.trim() || null,
+          },
+        });
+
+        setSuccessMessage(
+          `${targetUser.username}'s account has been deactivated.`,
+        );
+        setReason("");
+      } else if (action === "activate") {
+        await activateMutation.mutateAsync({ userId });
+        setSuccessMessage(
+          `${targetUser.username}'s account has been reactivated.`,
+        );
+      }
+
+      setDeactivationPreviewAt(null);
+      setConfirmationAction(null);
       void detailQuery.refetch();
     } catch {
-      // The mutation error is rendered below.
+      // Keep the confirmation dialog open so the mutation error
+      // remains visible and the administrator can retry or cancel.
     }
   }
+
+  function cancelConfirmation() {
+    if (anyMutationPending) {
+      return;
+    }
+
+    setDeactivationPreviewAt(null);
+    setConfirmationAction(null);
+  }
+
+  const confirmationDetails =
+    confirmationAction === "promote-user"
+      ? {
+          title: "Promote to moderator?",
+          description: `This will give ${targetUser?.username ?? "this user"} moderation permissions. Continue?`,
+          confirmLabel: "Promote to moderator",
+          variant: "primary" as const,
+        }
+      : confirmationAction === "promote-moderator"
+        ? {
+            title: "Promote to administrator?",
+            description: `This will give ${targetUser?.username ?? "this user"} full administrator permissions, including account and role management.`,
+            confirmLabel: "Promote to administrator",
+            variant: "primary" as const,
+          }
+        : confirmationAction === "demote-admin"
+          ? {
+              title: "Demote administrator?",
+              description: `This will change ${targetUser?.username ?? "this user"} from administrator to moderator. The backend will prevent this if it violates administrator protection rules.`,
+              confirmLabel: "Demote to moderator",
+              variant: "danger" as const,
+            }
+          : confirmationAction === "revoke-moderator"
+            ? {
+                title: "Revoke moderator role?",
+                description: `This will return ${targetUser?.username ?? "this user"} to the standard user role and remove their moderation permissions.`,
+                confirmLabel: "Revoke moderator",
+                variant: "danger" as const,
+              }
+            : confirmationAction === "deactivate"
+              ? {
+                  title: "Deactivate account?",
+                  description: `This will temporarily block ${targetUser?.username ?? "this user's"} account access for ${durationHours} hour(s) while preserving their role. Scheduled reactivation: ${deactivationPreviewAt ? formatDate(deactivationPreviewAt) : "Not available"}.`,
+                  confirmLabel: "Deactivate account",
+                  variant: "danger" as const,
+                }
+              : confirmationAction === "activate"
+                ? {
+                    title: "Reactivate account?",
+                    description: `This will restore ${targetUser?.username ?? "this user's"} account access.`,
+                    confirmLabel: "Reactivate account",
+                    variant: "primary" as const,
+                  }
+                : null;
 
   if (userId === null) {
     return (
@@ -725,6 +745,17 @@ export function AdminUserDetailPage() {
         ) : null}
 
         <ActionError error={mutationError} />
+
+        {validationError ? (
+          <div
+            className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4"
+            role="alert"
+          >
+            <p className="text-sm font-semibold text-amber-900">
+              {validationError}
+            </p>
+          </div>
+        ) : null}
 
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
@@ -1131,6 +1162,24 @@ export function AdminUserDetailPage() {
           </aside>
         </div>
       </div>
+
+      {confirmationDetails ? (
+        <ConfirmDialog
+          open={confirmationAction !== null}
+          title={confirmationDetails.title}
+          description={confirmationDetails.description}
+          confirmLabel={confirmationDetails.confirmLabel}
+          variant={confirmationDetails.variant}
+          loading={anyMutationPending}
+          errorMessage={
+            mutationError
+              ? getApiErrorMessage(mutationError)
+              : null
+          }
+          onConfirm={confirmAction}
+          onCancel={cancelConfirmation}
+        />
+      ) : null}
     </section>
   );
 }
