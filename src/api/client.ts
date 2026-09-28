@@ -3,6 +3,7 @@ import {
   ApiError,
   getApiErrorPayloadMessage,
 } from "./errors";
+import { notifyAuthInvalidation } from "./authEvents";
 
 type ApiRequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -120,6 +121,10 @@ export async function apiRequest<T = unknown>({
   const payload = await parseResponseBody(response);
 
   if (!response.ok) {
+    if (response.status === 401 && accessToken) {
+      notifyAuthInvalidation(accessToken);
+    }
+
     const message =
       getApiErrorPayloadMessage(payload) ??
       `TrackIt request failed with status ${response.status}.`;

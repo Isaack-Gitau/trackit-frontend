@@ -187,6 +187,18 @@ export function PortalSignInPage({
 
       navigate(destination, { replace: true });
     } catch (error) {
+      if (
+        error instanceof ApiError &&
+        error.status === 403 &&
+        error.message ===
+          "Your TrackIt account is currently inactive."
+      ) {
+        navigate("/account-inactive", {
+          replace: true,
+        });
+        return;
+      }
+
       setErrorMessage(getLoginErrorMessage(error));
     } finally {
       setIsSubmitting(false);

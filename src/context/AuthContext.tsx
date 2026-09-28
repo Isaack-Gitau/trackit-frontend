@@ -12,6 +12,9 @@ import {
   getCurrentUser,
   loginUser,
 } from "../api/auth";
+import {
+  subscribeToAuthInvalidation,
+} from "../api/authEvents";
 import { ApiError } from "../api/errors";
 import {
   clearStoredAccessToken,
@@ -87,6 +90,19 @@ export function AuthProvider({
     setUser(null);
     setStatus("unauthenticated");
   }, []);
+
+  useEffect(() => {
+    return subscribeToAuthInvalidation((failedAccessToken) => {
+      const currentStoredToken = getStoredAccessToken();
+
+      if (
+        currentStoredToken !== null &&
+        currentStoredToken === failedAccessToken
+      ) {
+        clearSession();
+      }
+    });
+  }, [clearSession]);
 
   const refreshUser = useCallback(async (): Promise<AuthenticatedUser | null> => {
     const token = getStoredAccessToken();
