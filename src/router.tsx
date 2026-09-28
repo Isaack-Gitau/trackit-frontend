@@ -31,6 +31,7 @@ import { PublicProfilePage } from "./pages/public/PublicProfilePage";
 import { SafetyPage } from "./pages/public/SafetyPage";
 import { TermsPage } from "./pages/public/TermsPage";
 
+import { AdminEmailPage } from "./pages/app/AdminEmailPage";
 import { AdminModerationPage } from "./pages/app/AdminModerationPage";
 import { AdminOverviewPage } from "./pages/app/AdminOverviewPage";
 import { AdminUserDetailPage } from "./pages/app/AdminUserDetailPage";
@@ -248,6 +249,10 @@ export const router = createBrowserRouter([
           {
             path: "/admin/moderation",
             element: <AdminModerationPage />,
+          },
+          {
+            path: "/admin/email",
+            element: <AdminEmailPage />,
           },
         ],
       },
