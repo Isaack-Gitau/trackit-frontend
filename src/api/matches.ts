@@ -5,12 +5,23 @@ import type { Match } from "../types/match";
 export async function getMyMatches(
   accessToken: string,
   options?: {
+    includeDismissed?: boolean;
     signal?: AbortSignal;
   },
 ): Promise<Match[]> {
+  const params = new URLSearchParams();
+
+  if (options?.includeDismissed) {
+    params.set("include_dismissed", "true");
+  }
+
+  const query = params.toString();
+
   return apiRequest<Match[]>({
     method: "GET",
-    path: "/api/matches",
+    path: query
+      ? `/api/matches?${query}`
+      : "/api/matches",
     accessToken,
     signal: options?.signal,
   });

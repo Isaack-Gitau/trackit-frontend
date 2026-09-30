@@ -10,7 +10,8 @@ import {
 
 export const matchQueryKeys = {
   all: ["matches"] as const,
-  list: ["matches", "list"] as const,
+  list: (includeDismissed: boolean) =>
+    ["matches", "list", includeDismissed] as const,
   detail: (matchId: number) =>
     ["matches", "detail", matchId] as const,
   item: (itemId: number) =>
@@ -19,9 +20,12 @@ export const matchQueryKeys = {
 
 export function useMyMatches(
   accessToken: string | null,
+  includeDismissed = false,
 ) {
   return useQuery({
-    queryKey: matchQueryKeys.list,
+    queryKey: matchQueryKeys.list(
+      includeDismissed,
+    ),
     queryFn: ({ signal }) => {
       if (!accessToken) {
         throw new Error(
@@ -29,7 +33,13 @@ export function useMyMatches(
         );
       }
 
-      return getMyMatches(accessToken, { signal });
+      return getMyMatches(
+        accessToken,
+        {
+          includeDismissed,
+          signal,
+        },
+      );
     },
     enabled: Boolean(accessToken),
   });
@@ -122,7 +132,15 @@ export function useDismissMatch(
 
     onSuccess: (updatedMatch) => {
       void queryClient.invalidateQueries({
-        queryKey: matchQueryKeys.list,
+        queryKey: matchQueryKeys.list(
+          true,
+        ),
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: matchQueryKeys.list(
+          false,
+        ),
       });
 
       void queryClient.invalidateQueries({
@@ -159,7 +177,15 @@ export function useRestoreMatch(
 
     onSuccess: (updatedMatch) => {
       void queryClient.invalidateQueries({
-        queryKey: matchQueryKeys.list,
+        queryKey: matchQueryKeys.list(
+          true,
+        ),
+      });
+
+      void queryClient.invalidateQueries({
+        queryKey: matchQueryKeys.list(
+          false,
+        ),
       });
 
       void queryClient.invalidateQueries({

@@ -10,6 +10,7 @@ import {
   useRestoreMatch,
 } from "../../hooks/useMatches";
 import { useMyItems } from "../../hooks/useMyItems";
+import { usePublicItem } from "../../hooks/usePublicItem";
 
 import type { Item, ItemType } from "../../types/item";
 import type { Match, MatchLevel } from "../../types/match";
@@ -140,6 +141,39 @@ function MatchItemCard({
   );
 }
 
+function MatchItemUnavailable({
+  label,
+  loading = false,
+}: {
+  label: string;
+  loading?: boolean;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
+      <p className="text-sm font-semibold text-[var(--trackit-text-muted)]">
+        {label}
+      </p>
+
+      {loading ? (
+        <div
+          className="mt-3 flex items-center gap-2 text-sm text-[var(--trackit-text-muted)]"
+          aria-live="polite"
+        >
+          <span
+            className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--trackit-border)] border-t-[var(--trackit-blue)]"
+            aria-hidden="true"
+          />
+          Loading item details...
+        </div>
+      ) : (
+        <p className="mt-2 text-sm text-[var(--trackit-text-muted)]">
+          Item details are no longer publicly available.
+        </p>
+      )}
+    </div>
+  );
+}
+
 function MatchSkeleton() {
   return (
     <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] p-5 shadow-sm">
@@ -177,6 +211,25 @@ function MatchCard({
   isDismissing: boolean;
   isRestoring: boolean;
 }) {
+  const lostItemQuery = usePublicItem(
+    lostItem ? null : match.lost_item_id,
+  );
+
+  const foundItemQuery = usePublicItem(
+    foundItem ? null : match.found_item_id,
+  );
+
+  const resolvedLostItem = lostItem ?? lostItemQuery.data;
+  const resolvedFoundItem = foundItem ?? foundItemQuery.data;
+
+  const lostItemLoading =
+    !lostItem &&
+    lostItemQuery.isLoading;
+
+  const foundItemLoading =
+    !foundItem &&
+    foundItemQuery.isLoading;
+
   return (
     <article
       className={[
@@ -210,38 +263,28 @@ function MatchCard({
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        {lostItem ? (
+        {resolvedLostItem ? (
           <MatchItemCard
-            item={lostItem}
+            item={resolvedLostItem}
             label="Lost side"
           />
         ) : (
-          <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
-            <p className="text-sm font-semibold text-[var(--trackit-text-muted)]">
-              Lost item
-            </p>
-
-            <p className="mt-2 text-sm text-[var(--trackit-text-muted)]">
-              Item details are no longer available.
-            </p>
-          </div>
+          <MatchItemUnavailable
+            label="Lost item"
+            loading={lostItemLoading}
+          />
         )}
 
-        {foundItem ? (
+        {resolvedFoundItem ? (
           <MatchItemCard
-            item={foundItem}
+            item={resolvedFoundItem}
             label="Found side"
           />
         ) : (
-          <div className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-blue)] p-4">
-            <p className="text-sm font-semibold text-[var(--trackit-text-muted)]">
-              Found item
-            </p>
-
-            <p className="mt-2 text-sm text-[var(--trackit-text-muted)]">
-              Item details are no longer available.
-            </p>
-          </div>
+          <MatchItemUnavailable
+            label="Found item"
+            loading={foundItemLoading}
+          />
         )}
       </div>
 
@@ -301,7 +344,7 @@ function MatchCard({
 export function MatchesPage() {
   const { accessToken } = useAuth();
 
-  const matchesQuery = useMyMatches(accessToken);
+  const matchesQuery = useMyMatches(accessToken, true);
   const itemsQuery = useMyItems(accessToken);
 
   const dismissMutation = useDismissMatch(accessToken);
