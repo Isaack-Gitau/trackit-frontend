@@ -179,6 +179,21 @@ export async function activateUser(
   });
 }
 
+export async function deleteAdminUser(
+  userId: number,
+  accessToken: string,
+  options?: {
+    signal?: AbortSignal;
+  },
+): Promise<void> {
+  return apiRequest<void>({
+    method: "DELETE",
+    path: `/api/profile/admin/${userId}`,
+    accessToken,
+    signal: options?.signal,
+  });
+}
+
 /**
  * Custom administrator email
  */

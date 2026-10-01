@@ -11,8 +11,8 @@ import { useUnreadNotificationCount } from "../../hooks/useNotifications";
 import { Button } from "../ui/Button";
 
 const navigation = [
-  { label: "Discover", to: "/discover" },
   { label: "Dashboard", to: "/dashboard" },
+  { label: "Discover", to: "/discover" },
   { label: "Post", to: "/items/post-lost" },
   { label: "My Items", to: "/items" },
   { label: "Claims", to: "/claims" },

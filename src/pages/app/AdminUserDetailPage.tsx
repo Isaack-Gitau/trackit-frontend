@@ -8,6 +8,7 @@ import {
   useActivateUser,
   useAdminUserDetail,
   useDeactivateUser,
+  useDeleteAdminUser,
   useDemoteAdminToModerator,
   usePromoteModeratorToAdmin,
   usePromoteUserToModerator,
@@ -341,6 +342,7 @@ export function AdminUserDetailPage() {
       | "revoke-moderator"
       | "deactivate"
       | "activate"
+      | "delete-user"
       | null
     >(null);
   const [validationError, setValidationError] =
@@ -371,6 +373,9 @@ export function AdminUserDetailPage() {
   const activateMutation =
     useActivateUser(accessToken);
 
+  const deleteMutation =
+    useDeleteAdminUser(accessToken);
+
   const targetUser = detailQuery.data;
 
   const anyMutationPending =
@@ -379,7 +384,8 @@ export function AdminUserDetailPage() {
     demoteAdminMutation.isPending ||
     revokeModeratorMutation.isPending ||
     deactivateMutation.isPending ||
-    activateMutation.isPending;
+    activateMutation.isPending ||
+    deleteMutation.isPending;
 
   const mutationError =
     promoteUserMutation.error ||
@@ -387,7 +393,8 @@ export function AdminUserDetailPage() {
     demoteAdminMutation.error ||
     revokeModeratorMutation.error ||
     deactivateMutation.error ||
-    activateMutation.error;
+    activateMutation.error ||
+    deleteMutation.error;
 
   function clearActionState() {
     setSuccessMessage(null);
@@ -475,6 +482,19 @@ export function AdminUserDetailPage() {
     setConfirmationAction("activate");
   }
 
+  function handleDelete() {
+    if (!userId || !targetUser) {
+      return;
+    }
+
+    if (currentUser?.id === targetUser.id) {
+      return;
+    }
+
+    clearActionState();
+    setConfirmationAction("delete-user");
+  }
+
   async function confirmAction() {
     if (!userId || !targetUser || !confirmationAction) {
       return;
@@ -523,6 +543,20 @@ export function AdminUserDetailPage() {
         setSuccessMessage(
           `${targetUser.username}'s account has been reactivated.`,
         );
+      } else if (action === "delete-user") {
+        await deleteMutation.mutateAsync({ userId });
+
+        setDeactivationPreviewAt(null);
+        setConfirmationAction(null);
+
+        navigate("/admin/users", {
+          replace: true,
+          state: {
+            successMessage: `${targetUser.username}'s account was permanently deleted.`,
+          },
+        });
+
+        return;
       }
 
       setDeactivationPreviewAt(null);
@@ -586,7 +620,14 @@ export function AdminUserDetailPage() {
                     confirmLabel: "Reactivate account",
                     variant: "primary" as const,
                   }
-                : null;
+                : confirmationAction === "delete-user"
+                  ? {
+                      title: "Permanently delete account?",
+                      description: `This will permanently delete ${targetUser?.username ?? "this user's"} TrackIt account and its associated data. This action cannot be undone.`,
+                      confirmLabel: "Permanently delete account",
+                      variant: "danger" as const,
+                    }
+                  : null;
 
   if (userId === null) {
     return (
@@ -1137,6 +1178,36 @@ export function AdminUserDetailPage() {
                   </Button>
                 </div>
               )}
+            </section>
+
+            <section className="rounded-2xl border border-red-200 bg-red-50/50 p-6 shadow-sm dark:border-red-900/50 dark:bg-red-950/10">
+              <h2 className="text-lg font-bold text-red-900 dark:text-red-200">
+                Permanent account deletion
+              </h2>
+
+              <p className="mt-2 text-sm leading-6 text-red-800 dark:text-red-300">
+                Permanently removes this account and its associated
+                TrackIt data. This cannot be undone.
+              </p>
+
+              <Button
+                variant="danger"
+                size="md"
+                fullWidth
+                loading={deleteMutation.isPending}
+                disabled={isSelf || anyMutationPending}
+                onClick={handleDelete}
+                className="mt-5"
+              >
+                Permanently delete account
+              </Button>
+
+              {isSelf ? (
+                <p className="mt-3 text-xs leading-5 text-red-700 dark:text-red-300">
+                  You cannot permanently delete your own administrator
+                  account.
+                </p>
+              ) : null}
             </section>
 
             <section className="rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-raised)] p-6 shadow-sm">

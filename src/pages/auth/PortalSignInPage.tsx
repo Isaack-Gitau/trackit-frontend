@@ -45,7 +45,7 @@ const PORTAL_CONFIG: Record<UserRole, PortalConfig> = {
       "Keep your lost-and-found journey moving.",
     welcomeDescription:
       "Sign in to post items, follow claims, review matches, receive notifications, and stay connected with the TrackIt community.",
-    destination: "/discover",
+    destination: "/dashboard",
   },
 
   moderator: {

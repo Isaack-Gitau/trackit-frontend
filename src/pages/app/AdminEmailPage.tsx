@@ -80,7 +80,7 @@ function RecipientRow({
   user: AdminUserListItem;
   selected: boolean;
   disabled: boolean;
-  onToggle: (userId: number) => void;
+  onToggle: (user: AdminUserListItem) => void;
 }) {
   return (
     <label
@@ -99,7 +99,7 @@ function RecipientRow({
         type="checkbox"
         checked={selected}
         disabled={disabled}
-        onChange={() => onToggle(user.id)}
+        onChange={() => onToggle(user)}
         className="mt-1 h-4 w-4 rounded border-[var(--trackit-border)] text-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]"
       />
 
@@ -239,8 +239,8 @@ export function AdminEmailPage() {
 
   const [page, setPage] = useState(1);
 
-  const [selectedUserIds, setSelectedUserIds] =
-    useState<Set<number>>(new Set());
+  const [selectedUsersById, setSelectedUsersById] =
+    useState<Map<number, AdminUserListItem>>(new Map());
 
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -288,7 +288,11 @@ export function AdminEmailPage() {
   const subjectLength = subject.trim().length;
   const messageLength = message.trim().length;
 
-  const recipientCount = selectedUserIds.size;
+  const selectedUserIds = Array.from(
+    selectedUsersById.keys(),
+  );
+
+  const recipientCount = selectedUsersById.size;
 
   const canSend =
     recipientCount >= 1 &&
@@ -299,15 +303,15 @@ export function AdminEmailPage() {
     messageLength <= MESSAGE_MAX_LENGTH &&
     !sendEmailMutation.isPending;
 
-  function toggleUser(userId: number) {
+  function toggleUser(user: AdminUserListItem) {
     setFormError("");
     setDeliveryResponse(null);
 
-    setSelectedUserIds((current) => {
-      const next = new Set(current);
+    setSelectedUsersById((current) => {
+      const next = new Map(current);
 
-      if (next.has(userId)) {
-        next.delete(userId);
+      if (next.has(user.id)) {
+        next.delete(user.id);
         return next;
       }
 
@@ -315,7 +319,7 @@ export function AdminEmailPage() {
         return next;
       }
 
-      next.add(userId);
+      next.set(user.id, user);
       return next;
     });
   }
@@ -372,7 +376,7 @@ export function AdminEmailPage() {
     sendEmailMutation.mutate(
       {
         payload: {
-          user_ids: Array.from(selectedUserIds),
+          user_ids: selectedUserIds,
           subject: subject.trim(),
           message: message.trim(),
         },
@@ -384,10 +388,6 @@ export function AdminEmailPage() {
       },
     );
   }
-
-  const usersById = new Map(
-    users.map((user) => [user.id, user]),
-  );
 
   const hasFilters =
     Boolean(search) ||
@@ -555,7 +555,7 @@ export function AdminEmailPage() {
               <>
                 <div className="mt-5 space-y-3">
                   {users.map((user) => {
-                    const selected = selectedUserIds.has(
+                    const selected = selectedUsersById.has(
                       user.id,
                     );
 
@@ -739,7 +739,7 @@ export function AdminEmailPage() {
           <div className="mt-6">
             <DeliveryResults
               response={deliveryResponse}
-              usersById={usersById}
+              usersById={selectedUsersById}
             />
           </div>
         ) : null}

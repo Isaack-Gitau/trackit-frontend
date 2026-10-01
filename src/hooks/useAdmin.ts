@@ -7,6 +7,7 @@ import {
 import {
   activateUser,
   deactivateUser,
+  deleteAdminUser,
   demoteAdminToModerator,
   getAdminUserDetail,
   getAdminUsers,
@@ -331,6 +332,41 @@ export function useActivateUser(
     },
 
     onSuccess: (_user, variables) => {
+      invalidateAdminUserData(
+        queryClient,
+        variables.userId,
+      );
+    },
+  });
+}
+
+export function useDeleteAdminUser(
+  accessToken: string | null,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      userId,
+      signal,
+    }: {
+      userId: number;
+      signal?: AbortSignal;
+    }) => {
+      if (!accessToken) {
+        throw new Error(
+          "Authentication is required to permanently delete an account.",
+        );
+      }
+
+      return deleteAdminUser(
+        userId,
+        accessToken,
+        { signal },
+      );
+    },
+
+    onSuccess: (_result, variables) => {
       invalidateAdminUserData(
         queryClient,
         variables.userId,

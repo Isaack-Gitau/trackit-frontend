@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 import { Button } from "../../components/ui/Button";
 import { getApiErrorMessage } from "../../api/errors";
@@ -106,12 +110,35 @@ function UserIdentity({
 
 export function AdminUsersPage() {
   const { accessToken } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [role, setRole] = useState<AdminUserRole | "">("");
   const [status, setStatus] = useState<AdminAccountStatus | "">("");
   const [page, setPage] = useState(1);
+  const [successMessage] =
+    useState<string | null>(() =>
+      typeof location.state?.successMessage === "string"
+        ? location.state.successMessage
+        : null,
+    );
+
+  useEffect(() => {
+    if (!location.state?.successMessage) {
+      return;
+    }
+
+    navigate(location.pathname + location.search, {
+      replace: true,
+      state: null,
+    });
+  }, [
+    location.pathname,
+    location.search,
+    navigate,
+  ]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -202,6 +229,18 @@ export function AdminUsersPage() {
             </div>
           </div>
         </header>
+
+        {successMessage ? (
+          <div
+            className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/20"
+            role="status"
+            aria-live="polite"
+          >
+            <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+              {successMessage}
+            </p>
+          </div>
+        ) : null}
 
         <div className="mb-6 rounded-2xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-raised)] p-4 shadow-sm sm:p-5">
           <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_1fr_1fr_auto] lg:items-end">
