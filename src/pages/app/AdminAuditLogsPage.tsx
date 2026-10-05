@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import {
+  exportAdminAuditLogs,
+  previewAdminAuditLogs,
+} from "../../api/audit";
 import { getApiErrorMessage } from "../../api/errors";
 import { useAuth } from "../../context/AuthContext";
 import { useAuditLogs } from "../../hooks/useAuditLogs";
@@ -12,6 +16,7 @@ import type {
 const PAGE_SIZE = 20;
 
 type SuccessFilter = "" | "true" | "false";
+type ExportFormat = "csv" | "json";
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -56,12 +61,60 @@ function getRangeEnd(page: number, total: number): number {
   return Math.min(page * PAGE_SIZE, total);
 }
 
+function parsePositiveIds(value: string): number[] | null {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return [];
+  }
+
+  const parts = trimmed
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.some((part) => !/^\d+$/.test(part))) {
+    return null;
+  }
+
+  const ids = parts.map((part) => Number(part));
+
+  if (
+    ids.some(
+      (id) => !Number.isSafeInteger(id) || id <= 0,
+    )
+  ) {
+    return null;
+  }
+
+  return [...new Set(ids)];
+}
+
+function toIsoDateTime(value: string): string | undefined {
+  if (!value.trim()) {
+    return undefined;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return date.toISOString();
+}
+
 function buildFilters(
   actionInput: string,
+  categoryInput: string,
   successFilter: SuccessFilter,
   userIdInput: string,
+  subjectUserIdInput: string,
   resourceTypeInput: string,
   resourceIdInput: string,
+  actorIdsInput: string,
+  createdFromInput: string,
+  createdToInput: string,
   page: number,
 ): AdminAuditLogFilters {
   const filters: AdminAuditLogFilters = {
@@ -74,17 +127,36 @@ function buildFilters(
     filters.action = action;
   }
 
+  const category = categoryInput.trim();
+  if (category) {
+    filters.category = category;
+  }
+
   if (successFilter !== "") {
     filters.success = successFilter === "true";
   }
 
   const userId = Number.parseInt(userIdInput, 10);
-  if (
-    userIdInput.trim() &&
-    Number.isInteger(userId) &&
-    userId > 0
-  ) {
+  const actorIds = parsePositiveIds(actorIdsInput);
+
+  if (userIdInput.trim()) {
     filters.user_id = userId;
+  } else if (actorIds?.length === 1) {
+    filters.user_id = actorIds[0];
+  } else if (actorIds && actorIds.length > 1) {
+    filters.user_ids = actorIds;
+  }
+
+  const subjectUserId = Number.parseInt(
+    subjectUserIdInput,
+    10,
+  );
+  if (
+    subjectUserIdInput.trim() &&
+    Number.isInteger(subjectUserId) &&
+    subjectUserId > 0
+  ) {
+    filters.subject_user_id = subjectUserId;
   }
 
   const resourceType = resourceTypeInput.trim();
@@ -99,6 +171,16 @@ function buildFilters(
     resourceId > 0
   ) {
     filters.resource_id = resourceId;
+  }
+
+  const createdFrom = toIsoDateTime(createdFromInput);
+  if (createdFrom) {
+    filters.created_from = createdFrom;
+  }
+
+  const createdTo = toIsoDateTime(createdToInput);
+  if (createdTo) {
+    filters.created_to = createdTo;
   }
 
   return filters;
@@ -143,7 +225,7 @@ function AuditLogCard({ log }: { log: AdminAuditLog }) {
         </div>
       </div>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
             Resource
@@ -158,7 +240,20 @@ function AuditLogCard({ log }: { log: AdminAuditLog }) {
             Actor ID
           </p>
           <p className="mt-1 text-sm text-[var(--trackit-text)]">
-            {log.user_id === null ? "System event" : `#${log.user_id}`}
+            {log.user_id === null
+              ? "System event"
+              : `#${log.user_id}`}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--trackit-muted)]">
+            Affected User ID
+          </p>
+          <p className="mt-1 text-sm text-[var(--trackit-text)]">
+            {log.subject_user_id === null
+              ? "—"
+              : `#${log.subject_user_id}`}
           </p>
         </div>
       </div>
@@ -187,16 +282,34 @@ export default function AdminAuditLogsPage() {
   const { accessToken } = useAuth();
 
   const [actionInput, setActionInput] = useState("");
+  const [categoryInput, setCategoryInput] = useState("");
   const [successFilter, setSuccessFilter] =
     useState<SuccessFilter>("");
   const [userIdInput, setUserIdInput] = useState("");
-  const [resourceTypeInput, setResourceTypeInput] = useState("");
+  const [actorIdsInput, setActorIdsInput] = useState("");
+  const [subjectUserIdInput, setSubjectUserIdInput] =
+    useState("");
+  const [resourceTypeInput, setResourceTypeInput] =
+    useState("");
   const [resourceIdInput, setResourceIdInput] = useState("");
+  const [createdFromInput, setCreatedFromInput] =
+    useState("");
+  const [createdToInput, setCreatedToInput] =
+    useState("");
   const [page, setPage] = useState(1);
+
+  const [previewResult, setPreviewResult] =
+    useState<number | null>(null);
+  const [previewLoading, setPreviewLoading] =
+    useState(false);
+  const [previewError, setPreviewError] =
+    useState<string | null>(null);
+  const [exportingFormat, setExportingFormat] =
+    useState<ExportFormat | null>(null);
 
   const [appliedFilters, setAppliedFilters] =
     useState<AdminAuditLogFilters>(() =>
-      buildFilters("", "", "", "", "", 1),
+      buildFilters("", "", "", "", "", "", "", "", "", "", 1),
     );
 
   const userIdError = useMemo(() => {
@@ -215,6 +328,22 @@ export default function AdminAuditLogsPage() {
     return null;
   }, [userIdInput]);
 
+  const subjectUserIdError = useMemo(() => {
+    const value = subjectUserIdInput.trim();
+
+    if (!value) {
+      return null;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+      return "Affected user ID must be a positive whole number.";
+    }
+
+    return null;
+  }, [subjectUserIdInput]);
+
   const resourceIdError = useMemo(() => {
     const value = resourceIdInput.trim();
 
@@ -231,6 +360,38 @@ export default function AdminAuditLogsPage() {
     return null;
   }, [resourceIdInput]);
 
+  const actorIdsError = useMemo(() => {
+    if (!actorIdsInput.trim()) {
+      return null;
+    }
+
+    return parsePositiveIds(actorIdsInput) === null
+      ? "Actor IDs must be positive whole numbers separated by commas."
+      : null;
+  }, [actorIdsInput]);
+
+  const dateRangeError = useMemo(() => {
+    if (!createdFromInput || !createdToInput) {
+      return null;
+    }
+
+    const from = new Date(createdFromInput);
+    const to = new Date(createdToInput);
+
+    if (
+      Number.isNaN(from.getTime()) ||
+      Number.isNaN(to.getTime())
+    ) {
+      return "Enter valid date and time values.";
+    }
+
+    if (from >= to) {
+      return "Start date/time must be before end date/time.";
+    }
+
+    return null;
+  }, [createdFromInput, createdToInput]);
+
   const auditLogsQuery = useAuditLogs(
     appliedFilters,
     accessToken,
@@ -243,7 +404,13 @@ export default function AdminAuditLogsPage() {
   const totalPages = response?.pages ?? 0;
 
   function applyFilters() {
-    if (userIdError || resourceIdError) {
+    if (
+      userIdError ||
+      subjectUserIdError ||
+      resourceIdError ||
+      actorIdsError ||
+      dateRangeError
+    ) {
       return;
     }
 
@@ -253,10 +420,15 @@ export default function AdminAuditLogsPage() {
     setAppliedFilters(
       buildFilters(
         actionInput,
+        categoryInput,
         successFilter,
         userIdInput,
+        subjectUserIdInput,
         resourceTypeInput,
         resourceIdInput,
+        actorIdsInput,
+        createdFromInput,
+        createdToInput,
         nextPage,
       ),
     );
@@ -264,13 +436,32 @@ export default function AdminAuditLogsPage() {
 
   function resetFilters() {
     setActionInput("");
+    setCategoryInput("");
     setSuccessFilter("");
     setUserIdInput("");
+    setActorIdsInput("");
+    setSubjectUserIdInput("");
     setResourceTypeInput("");
     setResourceIdInput("");
+    setCreatedFromInput("");
+    setCreatedToInput("");
+    setPreviewResult(null);
+    setPreviewError(null);
     setPage(1);
     setAppliedFilters(
-      buildFilters("", "", "", "", "", 1),
+      buildFilters(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        1,
+      ),
     );
   }
 
@@ -287,21 +478,128 @@ export default function AdminAuditLogsPage() {
     setAppliedFilters(
       buildFilters(
         actionInput,
+        categoryInput,
         successFilter,
         userIdInput,
+        subjectUserIdInput,
         resourceTypeInput,
         resourceIdInput,
+        actorIdsInput,
+        createdFromInput,
+        createdToInput,
         nextPage,
       ),
     );
   }
 
+  async function handlePreview() {
+    if (!accessToken) {
+      return;
+    }
+
+    if (
+      userIdError ||
+      subjectUserIdError ||
+      resourceIdError ||
+      actorIdsError ||
+      dateRangeError
+    ) {
+      return;
+    }
+
+    setPreviewLoading(true);
+    setPreviewError(null);
+
+    try {
+      const filters = buildFilters(
+        actionInput,
+        categoryInput,
+        successFilter,
+        userIdInput,
+        subjectUserIdInput,
+        resourceTypeInput,
+        resourceIdInput,
+        actorIdsInput,
+        createdFromInput,
+        createdToInput,
+        1,
+      );
+
+      delete filters.page;
+      delete filters.limit;
+
+      const result = await previewAdminAuditLogs(
+        filters,
+        accessToken,
+      );
+
+      setPreviewResult(result.total);
+    } catch (error) {
+      setPreviewResult(null);
+      setPreviewError(getApiErrorMessage(error));
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
+  async function handleExport(format: ExportFormat) {
+    if (!accessToken) {
+      return;
+    }
+
+    if (
+      userIdError ||
+      subjectUserIdError ||
+      resourceIdError ||
+      actorIdsError ||
+      dateRangeError
+    ) {
+      return;
+    }
+
+    setExportingFormat(format);
+
+    try {
+      const filters = buildFilters(
+        actionInput,
+        categoryInput,
+        successFilter,
+        userIdInput,
+        subjectUserIdInput,
+        resourceTypeInput,
+        resourceIdInput,
+        actorIdsInput,
+        createdFromInput,
+        createdToInput,
+        1,
+      );
+
+      delete filters.page;
+      delete filters.limit;
+
+      await exportAdminAuditLogs(
+        filters,
+        format,
+        accessToken,
+      );
+    } catch (error) {
+      setPreviewError(getApiErrorMessage(error));
+    } finally {
+      setExportingFormat(null);
+    }
+  }
+
   const hasFilters =
     Boolean(actionInput.trim()) ||
+    Boolean(categoryInput.trim()) ||
     successFilter !== "" ||
     Boolean(userIdInput.trim()) ||
+    Boolean(actorIdsInput.trim()) ||
+    Boolean(subjectUserIdInput.trim()) ||
     Boolean(resourceTypeInput.trim()) ||
-    Boolean(resourceIdInput.trim());
+    Boolean(resourceIdInput.trim()) ||
+    Boolean(createdFromInput) ||
+    Boolean(createdToInput);
 
   const rangeStart = getRangeStart(currentPage, total);
   const rangeEnd = getRangeEnd(currentPage, total);
@@ -312,13 +610,13 @@ export default function AdminAuditLogsPage() {
         <div className="mb-8">
           <Link
             to="/admin"
-            className="text-sm font-semibold text-[var(--trackit-primary)] hover:underline"
+            className="text-sm font-semibold text-[var(--trackit-blue)] hover:underline"
           >
             ← Back to admin overview
           </Link>
 
           <div className="mt-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--trackit-primary)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--trackit-blue)]">
               Administration
             </p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-[var(--trackit-navy)] sm:text-4xl">
@@ -338,7 +636,7 @@ export default function AdminAuditLogsPage() {
                 Filters
               </h2>
               <p className="mt-1 text-sm text-[var(--trackit-muted)]">
-                Narrow the audit history by action, actor, or resource.
+                Narrow the audit history by action, actor, affected user, or resource.
               </p>
             </div>
 
@@ -346,14 +644,14 @@ export default function AdminAuditLogsPage() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="text-sm font-semibold text-[var(--trackit-primary)] hover:underline"
+                className="text-sm font-semibold text-[var(--trackit-blue)] hover:underline"
               >
                 Clear filters
               </button>
             ) : null}
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <label className="block">
               <span className="text-sm font-semibold text-[var(--trackit-text)]">
                 Action
@@ -366,7 +664,23 @@ export default function AdminAuditLogsPage() {
                 }
                 maxLength={100}
                 placeholder="e.g. admin_action"
-                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-primary)] focus:ring-2 focus:ring-[var(--trackit-primary)]/20"
+                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[var(--trackit-text)]">
+                Category
+              </span>
+              <input
+                type="text"
+                value={categoryInput}
+                onChange={(event) =>
+                  setCategoryInput(event.target.value)
+                }
+                maxLength={100}
+                placeholder="e.g. security"
+                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
               />
             </label>
 
@@ -381,7 +695,7 @@ export default function AdminAuditLogsPage() {
                     event.target.value as SuccessFilter,
                   )
                 }
-                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-primary)] focus:ring-2 focus:ring-[var(--trackit-primary)]/20"
+                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
               >
                 <option value="">All results</option>
                 <option value="true">Successful</option>
@@ -406,12 +720,68 @@ export default function AdminAuditLogsPage() {
                 className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
                   userIdError
                     ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-primary)] focus:ring-[var(--trackit-primary)]/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
                 }`}
               />
               {userIdError ? (
                 <p className="mt-1 text-xs text-red-700">
                   {userIdError}
+                </p>
+              ) : null}
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[var(--trackit-text)]">
+                Multiple Actor IDs
+              </span>
+              <input
+                type="text"
+                value={actorIdsInput}
+                onChange={(event) =>
+                  setActorIdsInput(event.target.value)
+                }
+                placeholder="e.g. 12, 18, 24"
+                aria-invalid={Boolean(actorIdsError)}
+                className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
+                  actorIdsError
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
+                }`}
+              />
+              {actorIdsError ? (
+                <p className="mt-1 text-xs text-red-700">
+                  {actorIdsError}
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-[var(--trackit-muted)]">
+                  Leave empty to include all actors.
+                </p>
+              )}
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[var(--trackit-text)]">
+                Affected User ID
+              </span>
+              <input
+                type="number"
+                min={1}
+                step={1}
+                value={subjectUserIdInput}
+                onChange={(event) =>
+                  setSubjectUserIdInput(event.target.value)
+                }
+                placeholder="User ID"
+                aria-invalid={Boolean(subjectUserIdError)}
+                className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
+                  subjectUserIdError
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
+                }`}
+              />
+              {subjectUserIdError ? (
+                <p className="mt-1 text-xs text-red-700">
+                  {subjectUserIdError}
                 </p>
               ) : null}
             </label>
@@ -428,7 +798,7 @@ export default function AdminAuditLogsPage() {
                 }
                 maxLength={100}
                 placeholder="e.g. user"
-                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-primary)] focus:ring-2 focus:ring-[var(--trackit-primary)]/20"
+                className="mt-2 w-full rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:border-[var(--trackit-blue)] focus:ring-2 focus:ring-[var(--trackit-blue)]/20"
               />
             </label>
 
@@ -449,7 +819,7 @@ export default function AdminAuditLogsPage() {
                 className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
                   resourceIdError
                     ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
-                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-primary)] focus:ring-[var(--trackit-primary)]/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
                 }`}
               />
               {resourceIdError ? (
@@ -458,16 +828,140 @@ export default function AdminAuditLogsPage() {
                 </p>
               ) : null}
             </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[var(--trackit-text)]">
+                From
+              </span>
+              <input
+                type="datetime-local"
+                value={createdFromInput}
+                onChange={(event) =>
+                  setCreatedFromInput(event.target.value)
+                }
+                aria-invalid={Boolean(dateRangeError)}
+                className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
+                  dateRangeError
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
+                }`}
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-semibold text-[var(--trackit-text)]">
+                To
+              </span>
+              <input
+                type="datetime-local"
+                value={createdToInput}
+                onChange={(event) =>
+                  setCreatedToInput(event.target.value)
+                }
+                aria-invalid={Boolean(dateRangeError)}
+                className={`mt-2 w-full rounded-xl border bg-[var(--trackit-surface)] px-3 py-2.5 text-sm text-[var(--trackit-text)] outline-none transition focus:ring-2 ${
+                  dateRangeError
+                    ? "border-red-400 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-[var(--trackit-border)] focus:border-[var(--trackit-blue)] focus:ring-[var(--trackit-blue)]/20"
+                }`}
+              />
+            </label>
           </div>
 
-          <div className="mt-5 flex justify-end">
+          {dateRangeError ? (
+            <p className="mt-2 text-xs text-red-700">
+              {dateRangeError}
+            </p>
+          ) : null}
+
+          <div className="mt-5 flex flex-wrap justify-end gap-2">
+            <button
+              type="button"
+              onClick={handlePreview}
+              disabled={Boolean(
+                userIdError ||
+                  subjectUserIdError ||
+                  resourceIdError ||
+                  actorIdsError ||
+                  dateRangeError ||
+                  previewLoading,
+              )}
+              className="rounded-xl border border-[var(--trackit-border)] px-5 py-2.5 text-sm font-semibold text-[var(--trackit-text)] transition hover:bg-[var(--trackit-surface-muted)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {previewLoading
+                ? "Checking…"
+                : "Preview results"}
+            </button>
+
             <button
               type="button"
               onClick={applyFilters}
-              disabled={Boolean(userIdError || resourceIdError)}
-              className="rounded-xl bg-[var(--trackit-primary)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--trackit-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={Boolean(
+                userIdError ||
+                  subjectUserIdError ||
+                  resourceIdError ||
+                  actorIdsError ||
+                  dateRangeError,
+              )}
+              className="rounded-xl bg-[var(--trackit-blue)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--trackit-blue-hover)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               Apply filters
+            </button>
+          </div>
+
+          {previewResult !== null || previewError ? (
+            <div className="mt-5 rounded-xl border border-[var(--trackit-border)] bg-[var(--trackit-surface-muted)] p-4">
+              {previewError ? (
+                <p className="text-sm text-red-700">
+                  Preview/export error: {previewError}
+                </p>
+              ) : (
+                <p className="text-sm text-[var(--trackit-text)]">
+                  Preview:{" "}
+                  <span className="font-semibold">
+                    {previewResult} matching event
+                    {previewResult === 1 ? "" : "s"}
+                  </span>
+                </p>
+              )}
+            </div>
+          ) : null}
+
+          <div className="mt-4 flex flex-wrap justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => handleExport("csv")}
+              disabled={Boolean(
+                userIdError ||
+                  subjectUserIdError ||
+                  resourceIdError ||
+                  actorIdsError ||
+                  dateRangeError ||
+                  exportingFormat,
+              )}
+              className="rounded-xl border border-[var(--trackit-border)] px-4 py-2.5 text-sm font-semibold text-[var(--trackit-text)] transition hover:bg-[var(--trackit-surface-muted)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {exportingFormat === "csv"
+                ? "Exporting CSV…"
+                : "Export CSV"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleExport("json")}
+              disabled={Boolean(
+                userIdError ||
+                  subjectUserIdError ||
+                  resourceIdError ||
+                  actorIdsError ||
+                  dateRangeError ||
+                  exportingFormat,
+              )}
+              className="rounded-xl border border-[var(--trackit-border)] px-4 py-2.5 text-sm font-semibold text-[var(--trackit-text)] transition hover:bg-[var(--trackit-surface-muted)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {exportingFormat === "json"
+                ? "Exporting JSON…"
+                : "Export JSON"}
             </button>
           </div>
         </div>
@@ -512,7 +1006,7 @@ export default function AdminAuditLogsPage() {
             <button
               type="button"
               onClick={() => auditLogsQuery.refetch()}
-              className="mt-4 rounded-xl bg-[var(--trackit-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--trackit-primary-hover)]"
+              className="mt-4 rounded-xl bg-[var(--trackit-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--trackit-blue-hover)]"
             >
               Try again
             </button>
@@ -532,7 +1026,7 @@ export default function AdminAuditLogsPage() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="mt-5 rounded-xl bg-[var(--trackit-primary)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--trackit-primary-hover)]"
+                className="mt-5 rounded-xl bg-[var(--trackit-blue)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--trackit-blue-hover)]"
               >
                 Clear filters
               </button>
@@ -572,7 +1066,7 @@ export default function AdminAuditLogsPage() {
                       currentPage >= totalPages ||
                       auditLogsQuery.isFetching
                     }
-                    className="rounded-xl bg-[var(--trackit-primary)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--trackit-primary-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-xl bg-[var(--trackit-blue)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--trackit-blue-hover)] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Next
                   </button>
